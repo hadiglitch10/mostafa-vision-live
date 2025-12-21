@@ -51,7 +51,8 @@ const PhotoCard = ({ src, title, category, aspectRatio = "4/5", onClick, priorit
           src={src}
           alt={title || "Photography by Mostafavision"}
           loading="lazy"
-          className={`w-full h-full object-cover transition-all duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'} group-hover:scale-110`}
+          decoding="async"
+          className={`w-full h-full object-cover transition-all duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'} group-hover:scale-110 will-change-transform`}
           onLoad={() => setIsLoaded(true)}
         />
       )}

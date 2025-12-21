@@ -160,15 +160,9 @@ const StackSection = ({
   onOpenLightbox,
   isAdmin,
   onAddPhoto,
-  isMobileStack = false
 }: StackSectionProps) => {
-
-  // On mobile, we force this component to show. On desktop, this might be hidden or used for Concerts.
-  const visibilityClass = isMobileStack ? "block md:hidden" : "hidden md:block";
-
   return (
-    <div className={`py-20 container relative min-h-[600px] flex flex-col items-center justify-center gap-12 ${visibilityClass}`}>
-
+    <div className="py-20 container relative min-h-[600px] flex flex-col items-center justify-center gap-12">
       {/* Mobile Header */}
       <div className="relative z-10 max-w-md text-center">
         <div className="absolute top-[-2rem] left-1/2 -translate-x-1/2 text-[8rem] font-bold text-foreground/5 select-none -z-10 font-heading italic leading-none whitespace-nowrap">
@@ -194,35 +188,37 @@ const StackSection = ({
 
       {/* Premium 3D Stack - Liquid Glass Effect */}
       <div className="relative w-[85vw] max-w-sm h-[450px] perspective-1000 mt-4 mx-auto">
-        {photos.length > 0 ? photos.map((photo, index) => {
-          // Limit stack depth on mobile for performance/visuals
-          if (index > 4) return null;
+        {photos.length > 0 ? (
+          photos.map((photo, index) => {
+            // Limit stack depth on mobile for performance/visuals
+            if (index > 4) return null;
 
-          return (
-            <div
-              key={photo.id}
-              className="absolute top-0 left-0 w-full h-full transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] cursor-pointer group"
-              style={{
-                transform: `translate3d(${index * 2}px, ${index * 8}px, -${index * 30}px) rotate(${index % 2 === 0 ? -3 : 3}deg)`,
-                zIndex: 50 - index,
-                opacity: 1 - (index * 0.1)
-              }}
-              onClick={() => onOpenLightbox(index)}
-            >
-              {/* Card Container with Liquid Glass Effect */}
-              <div className="w-full h-full rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-white/5 backdrop-blur-md border border-white/10 ring-1 ring-white/20">
-                <div className="absolute inset-0 z-10 bg-gradient-to-tr from-white/20 to-transparent opacity-50 pointer-events-none" />
-                <PhotoCard
-                  src={photo.image_url}
-                  title={photo.title ?? undefined}
-                  category={photo.category ?? undefined}
-                  aspectRatio="4/5"
-                  onClick={() => onOpenLightbox(index)}
-                />
+            return (
+              <div
+                key={photo.id}
+                className="absolute top-0 left-0 w-full h-full transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] cursor-pointer group"
+                style={{
+                  transform: `translate3d(${index * 2}px, ${index * 8}px, -${index * 30}px) rotate(${index % 2 === 0 ? -3 : 3}deg)`,
+                  zIndex: 50 - index,
+                  opacity: 1 - index * 0.1,
+                }}
+                onClick={() => onOpenLightbox(index)}
+              >
+                {/* Card Container with Optimized Glass (No blur on mobile) */}
+                <div className="w-full h-full rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] md:bg-white/5 md:backdrop-blur-md bg-[#111] border border-white/10 ring-1 ring-white/20 will-change-transform">
+                  <div className="absolute inset-0 z-10 bg-gradient-to-tr from-white/20 to-transparent opacity-50 pointer-events-none" />
+                  <PhotoCard
+                    src={photo.image_url}
+                    title={photo.title ?? undefined}
+                    category={photo.category ?? undefined}
+                    aspectRatio="4/5"
+                    onClick={() => onOpenLightbox(index)}
+                  />
+                </div>
               </div>
-            </div>
-          );
-        }) : (
+            );
+          })
+        ) : (
           <div className="w-full h-full flex items-center justify-center bg-muted/20 rounded-xl border border-dashed border-muted-foreground/20">
             <p className="font-typewriter text-muted-foreground text-xs">No photos</p>
           </div>
@@ -230,7 +226,9 @@ const StackSection = ({
       </div>
 
       <div className="text-center mt-8">
-        <span className="text-[10px] font-typewriter tracking-widest text-muted-foreground uppercase opacity-50">Swipe / Tap to View</span>
+        <span className="text-[10px] font-typewriter tracking-widest text-muted-foreground uppercase opacity-50">
+          Swipe / Tap to View
+        </span>
       </div>
     </div>
   );
@@ -300,104 +298,122 @@ const Gallery = ({ photos }: GalleryProps) => {
 
           {/* ================= CONCERTS ================= */}
           {(sections.concerts.length > 0 || isAuthenticated) && (
-            <CollageSection
-              number="01"
-              title="Concerts"
-              subtitle="SWIPE TO EXPLORE NOISE."
-              photos={sections.concerts}
-              onOpenLightbox={(index) => openLightbox(sections.concerts, index)}
-              isAdmin={isAuthenticated}
-              onAddPhoto={handleAddPhoto}
-            />
-          )}
-          {(sections.concerts.length > 0 || isAuthenticated) && (
-            <StackSection
-              number="01"
-              title="Concerts"
-              subtitle="SWIPE TO EXPLORE NOISE."
-              photos={sections.concerts}
-              onOpenLightbox={(index) => openLightbox(sections.concerts, index)}
-              isAdmin={isAuthenticated}
-              onAddPhoto={handleAddPhoto}
-              isMobileStack={true}
-            />
+            <>
+              {/* Desktop View */}
+              <div className="hidden md:block">
+                <CollageSection
+                  number="01"
+                  title="Concerts"
+                  subtitle="SWIPE TO EXPLORE NOISE."
+                  photos={sections.concerts}
+                  onOpenLightbox={(index) => openLightbox(sections.concerts, index)}
+                  isAdmin={isAuthenticated}
+                  onAddPhoto={handleAddPhoto}
+                />
+              </div>
+              {/* Mobile View */}
+              <div className="md:hidden">
+                <StackSection
+                  number="01"
+                  title="Concerts"
+                  subtitle="SWIPE TO EXPLORE NOISE."
+                  photos={sections.concerts}
+                  onOpenLightbox={(index) => openLightbox(sections.concerts, index)}
+                  isAdmin={isAuthenticated}
+                  onAddPhoto={handleAddPhoto}
+                  isMobileStack={true}
+                />
+              </div>
+            </>
           )}
 
 
           {/* ================= STREET ================= */}
           {(sections.street.length > 0 || isAuthenticated) && (
-            <CollageSection
-              number="02"
-              title="Street"
-              subtitle="UNSCRIPTED URBAN REALITY."
-              photos={sections.street}
-              onOpenLightbox={(index) => openLightbox(sections.street, index)}
-              isAdmin={isAuthenticated}
-              onAddPhoto={handleAddPhoto}
-            />
-          )}
-          {(sections.street.length > 0 || isAuthenticated) && (
-            <StackSection
-              number="02"
-              title="Street"
-              subtitle="UNSCRIPTED URBAN REALITY."
-              photos={sections.street}
-              onOpenLightbox={(index) => openLightbox(sections.street, index)}
-              isAdmin={isAuthenticated}
-              onAddPhoto={handleAddPhoto}
-              isMobileStack={true}
-            />
+            <>
+              <div className="hidden md:block">
+                <CollageSection
+                  number="02"
+                  title="Street"
+                  subtitle="UNSCRIPTED URBAN REALITY."
+                  photos={sections.street}
+                  onOpenLightbox={(index) => openLightbox(sections.street, index)}
+                  isAdmin={isAuthenticated}
+                  onAddPhoto={handleAddPhoto}
+                />
+              </div>
+              <div className="md:hidden">
+                <StackSection
+                  number="02"
+                  title="Street"
+                  subtitle="UNSCRIPTED URBAN REALITY."
+                  photos={sections.street}
+                  onOpenLightbox={(index) => openLightbox(sections.street, index)}
+                  isAdmin={isAuthenticated}
+                  onAddPhoto={handleAddPhoto}
+                  isMobileStack={true}
+                />
+              </div>
+            </>
           )}
 
 
           {/* ================= EDITS ================= */}
           {(sections.edits.length > 0 || isAuthenticated) && (
-            <CollageSection
-              number="03"
-              title="Edits"
-              subtitle="THE ART OF COLORS."
-              photos={sections.edits}
-              onOpenLightbox={(index) => openLightbox(sections.edits, index)}
-              isAdmin={isAuthenticated}
-              onAddPhoto={handleAddPhoto}
-            />
-          )}
-          {(sections.edits.length > 0 || isAuthenticated) && (
-            <StackSection
-              number="03"
-              title="Edits"
-              subtitle="THE ART OF COLORS."
-              photos={sections.edits}
-              onOpenLightbox={(index) => openLightbox(sections.edits, index)}
-              isAdmin={isAuthenticated}
-              onAddPhoto={handleAddPhoto}
-              isMobileStack={true}
-            />
+            <>
+              <div className="hidden md:block">
+                <CollageSection
+                  number="03"
+                  title="Edits"
+                  subtitle="THE ART OF COLORS."
+                  photos={sections.edits}
+                  onOpenLightbox={(index) => openLightbox(sections.edits, index)}
+                  isAdmin={isAuthenticated}
+                  onAddPhoto={handleAddPhoto}
+                />
+              </div>
+              <div className="md:hidden">
+                <StackSection
+                  number="03"
+                  title="Edits"
+                  subtitle="THE ART OF COLORS."
+                  photos={sections.edits}
+                  onOpenLightbox={(index) => openLightbox(sections.edits, index)}
+                  isAdmin={isAuthenticated}
+                  onAddPhoto={handleAddPhoto}
+                  isMobileStack={true}
+                />
+              </div>
+            </>
           )}
 
           {/* ================= EVENTS ================= */}
           {(sections.events.length > 0 || isAuthenticated) && (
-            <CollageSection
-              number="04"
-              title="Events"
-              subtitle="CAPTURED MOMENTS & MEMORIES."
-              photos={sections.events}
-              onOpenLightbox={(index) => openLightbox(sections.events, index)}
-              isAdmin={isAuthenticated}
-              onAddPhoto={handleAddPhoto}
-            />
-          )}
-          {(sections.events.length > 0 || isAuthenticated) && (
-            <StackSection
-              number="04"
-              title="Events"
-              subtitle="CAPTURED MOMENTS & MEMORIES."
-              photos={sections.events}
-              onOpenLightbox={(index) => openLightbox(sections.events, index)}
-              isAdmin={isAuthenticated}
-              onAddPhoto={handleAddPhoto}
-              isMobileStack={true}
-            />
+            <>
+              <div className="hidden md:block">
+                <CollageSection
+                  number="04"
+                  title="Events"
+                  subtitle="CAPTURED MOMENTS & MEMORIES."
+                  photos={sections.events}
+                  onOpenLightbox={(index) => openLightbox(sections.events, index)}
+                  isAdmin={isAuthenticated}
+                  onAddPhoto={handleAddPhoto}
+                />
+              </div>
+              <div className="md:hidden">
+                <StackSection
+                  number="04"
+                  title="Events"
+                  subtitle="CAPTURED MOMENTS & MEMORIES."
+                  photos={sections.events}
+                  onOpenLightbox={(index) => openLightbox(sections.events, index)}
+                  isAdmin={isAuthenticated}
+                  onAddPhoto={handleAddPhoto}
+                  isMobileStack={true}
+                />
+              </div>
+            </>
           )}
 
         </div>
