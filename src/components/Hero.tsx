@@ -1,3 +1,4 @@
+import { useEffect, useState, useRef } from "react";
 import { ChevronDown } from "lucide-react";
 
 interface HeroProps {
@@ -5,20 +6,49 @@ interface HeroProps {
 }
 
 const Hero = ({ heroImage }: HeroProps) => {
+  const [scrollY, setScrollY] = useState(0);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (heroRef.current) {
+        const rect = heroRef.current.getBoundingClientRect();
+        if (rect.bottom > 0) {
+          setScrollY(window.scrollY);
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Parallax effect - image moves slower than scroll
+  const parallaxOffset = scrollY * 0.4;
+
   return (
-    <section className="relative h-screen w-full overflow-hidden">
-      {/* Background Image */}
-      <div className="absolute inset-0">
+    <section ref={heroRef} className="relative h-screen w-full overflow-hidden">
+      {/* Background Image with Parallax */}
+      <div 
+        className="absolute inset-0 will-change-transform"
+        style={{ 
+          transform: `translateY(${parallaxOffset}px) scale(1.1)`,
+        }}
+      >
         <img
           src={heroImage}
           alt="Concert photography by Mostafavision"
-          className="w-full h-full object-cover"
-        />
-        <div 
-          className="absolute inset-0" 
-          style={{ background: 'var(--hero-overlay)' }}
+          className={`w-full h-full object-cover transition-opacity duration-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+          onLoad={() => setIsLoaded(true)}
         />
       </div>
+      
+      {/* Gradient Overlay */}
+      <div 
+        className="absolute inset-0 pointer-events-none" 
+        style={{ background: 'var(--hero-overlay)' }}
+      />
 
       {/* Content */}
       <div className="relative z-10 h-full flex flex-col justify-end pb-20 md:pb-32 container">
