@@ -22,6 +22,7 @@ export type Database = {
           featured: boolean | null
           id: string
           image_url: string
+          section: string | null
           sort_order: number | null
           title: string | null
         }
@@ -32,6 +33,7 @@ export type Database = {
           featured?: boolean | null
           id?: string
           image_url: string
+          section?: string | null
           sort_order?: number | null
           title?: string | null
         }
@@ -42,6 +44,7 @@ export type Database = {
           featured?: boolean | null
           id?: string
           image_url?: string
+          section?: string | null
           sort_order?: number | null
           title?: string | null
         }
