@@ -88,14 +88,14 @@ const Auth = () => {
           <a href="/" className="text-2xl font-bold tracking-tight">
             MOSTAFA<span className="text-primary">VISION</span>
           </a>
-          
+
           <div className="max-w-md">
-            <h1 className="text-5xl font-black uppercase tracking-tighter leading-tight mb-6">
+            <h1 className="text-display text-5xl font-black uppercase tracking-tighter leading-tight mb-6">
               <span className="text-foreground">Admin</span>
               <br />
               <span className="text-primary">Portal</span>
             </h1>
-            <p className="text-muted-foreground text-lg">
+            <p className="text-muted-foreground text-lg font-light">
               Manage your portfolio, upload new work, and curate your digital archive.
             </p>
           </div>
@@ -111,7 +111,7 @@ const Auth = () => {
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           <div className="lg:hidden mb-12">
-            <a href="/" className="text-xl font-bold tracking-tight">
+            <a href="/" className="text-xl font-heading font-black tracking-tight">
               MOSTAFA<span className="text-primary">VISION</span>
             </a>
           </div>
@@ -121,8 +121,8 @@ const Auth = () => {
               {isLogin ? 'Welcome back' : 'Create account'}
             </h2>
             <p className="text-muted-foreground">
-              {isLogin 
-                ? 'Enter your credentials to access the admin panel' 
+              {isLogin
+                ? 'Enter your credentials to access the admin panel'
                 : 'Set up your admin account'}
             </p>
           </div>
@@ -167,8 +167,8 @@ const Auth = () => {
               </div>
             </div>
 
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               className="w-full h-12 text-sm uppercase tracking-wider font-semibold"
               disabled={isSubmitting}
             >
@@ -193,7 +193,7 @@ const Auth = () => {
           </div>
 
           <div className="mt-12 pt-8 border-t border-border/50">
-            <a 
+            <a
               href="/"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
             >

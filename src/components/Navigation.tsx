@@ -1,8 +1,20 @@
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Menu, X, Camera } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const { isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navItems = [
     { label: "Work", href: "#gallery" },
@@ -11,20 +23,49 @@ const Navigation = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-md border-b border-border/50">
-      <div className="container flex items-center justify-between h-16 md:h-20">
+    <nav
+      className={cn(
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
+        scrolled || isOpen ? "bg-white/5 backdrop-blur-xl border-b border-white/10 py-3" : "bg-transparent py-6"
+      )}
+    >
+      <div className="container flex items-center justify-between">
         {/* Logo */}
-        <a href="#" className="text-lg md:text-xl font-bold tracking-tight">
-          MOSTAFA<span className="text-primary">VISION</span>
+        <a href="#" className="flex items-center gap-3 group">
+          <span className="text-lg font-heading font-light tracking-wide text-foreground">
+            MOSTAFA<span className="font-bold">VISION</span>
+          </span>
         </a>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-10">
-          {navItems.map((item) => (
-            <a key={item.label} href={item.href} className="nav-link">
+        <div className="hidden md:flex items-center gap-12">
+          {navItems.map((item, i) => (
+            <a
+              key={item.label}
+              href={item.href}
+              className="nav-link"
+              style={{ animationDelay: `${i * 100}ms` }}
+            >
               {item.label}
             </a>
           ))}
+
+          {isAuthenticated ? (
+            <a
+              href="/admin"
+              className="px-4 py-1.5 rounded-full bg-foreground text-background text-[10px] uppercase tracking-widest font-bold hover:bg-foreground/80 transition-all duration-300 flex items-center gap-2"
+            >
+              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              Admin
+            </a>
+          ) : (
+            <a
+              href="/auth"
+              className="text-xs uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity"
+            >
+              Log In
+            </a>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -39,18 +80,25 @@ const Navigation = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden absolute top-16 left-0 right-0 bg-background border-b border-border animate-slide-in">
-          <div className="container py-6 flex flex-col gap-6">
+        <div className="md:hidden absolute top-[100%] left-0 right-0 h-screen bg-background/90 backdrop-blur-2xl animate-in slide-in-from-top-5 duration-300">
+          <div className="container py-20 flex flex-col gap-10 items-center justify-center h-3/4">
             {navItems.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
-                className="text-2xl font-semibold tracking-tight text-muted-foreground hover:text-foreground transition-colors"
+                className="text-4xl font-light tracking-tight text-foreground hover:scale-110 transition-transform duration-300"
                 onClick={() => setIsOpen(false)}
               >
                 {item.label}
               </a>
             ))}
+            <a
+              href={isAuthenticated ? "/admin" : "/auth"}
+              className="mt-10 px-8 py-3 rounded-full border border-foreground/20 text-sm uppercase tracking-widest font-bold hover:bg-foreground hover:text-background transition-all"
+              onClick={() => setIsOpen(false)}
+            >
+              {isAuthenticated ? "Dashboard" : "Admin Access"}
+            </a>
           </div>
         </div>
       )}
