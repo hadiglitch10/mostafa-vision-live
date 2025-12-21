@@ -21,7 +21,7 @@ const PhotoCard = ({ src, title, category, aspectRatio = "4/5", onClick }: Photo
           observer.disconnect();
         }
       },
-      { threshold: 0.1, rootMargin: '50px' }
+      { threshold: 0.01, rootMargin: '2000px' }
     );
 
     if (cardRef.current) {

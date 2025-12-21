@@ -41,30 +41,16 @@ const Auth = () => {
     }
 
     try {
-      if (isLogin) {
-        const { error } = await signIn(email, password);
-        if (error) {
-          if (error.message.includes('Invalid login credentials')) {
-            toast.error('Invalid email or password');
-          } else {
-            toast.error(error.message);
-          }
+      const { error } = await signIn(email, password);
+      if (error) {
+        if (error.message.includes('Invalid login credentials')) {
+          toast.error('Invalid email or password');
         } else {
-          toast.success('Welcome back!');
-          navigate('/admin');
+          toast.error(error.message);
         }
       } else {
-        const { error } = await signUp(email, password);
-        if (error) {
-          if (error.message.includes('already registered')) {
-            toast.error('This email is already registered');
-          } else {
-            toast.error(error.message);
-          }
-        } else {
-          toast.success('Account created! You can now sign in.');
-          setIsLogin(true);
-        }
+        toast.success('Welcome back!');
+        navigate('/admin');
       }
     } finally {
       setIsSubmitting(false);
@@ -118,12 +104,10 @@ const Auth = () => {
 
           <div className="mb-8">
             <h2 className="text-3xl font-bold tracking-tight mb-2">
-              {isLogin ? 'Welcome back' : 'Create account'}
+              Welcome back
             </h2>
             <p className="text-muted-foreground">
-              {isLogin
-                ? 'Enter your credentials to access the admin panel'
-                : 'Set up your admin account'}
+              Enter your credentials to access the admin panel
             </p>
           </div>
 
@@ -175,22 +159,12 @@ const Auth = () => {
               {isSubmitting ? (
                 <div className="w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
               ) : (
-                isLogin ? 'Sign In' : 'Create Account'
+                'Sign In'
               )}
             </Button>
           </form>
 
-          <div className="mt-8 text-center">
-            <button
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-muted-foreground hover:text-foreground transition-colors text-sm"
-            >
-              {isLogin ? "Don't have an account? " : 'Already have an account? '}
-              <span className="text-primary font-medium">
-                {isLogin ? 'Sign up' : 'Sign in'}
-              </span>
-            </button>
-          </div>
+
 
           <div className="mt-12 pt-8 border-t border-border/50">
             <a
