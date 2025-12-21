@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,13 +51,21 @@ const Navigation = () => {
           ))}
 
           {isAuthenticated ? (
-            <a
-              href="/admin"
-              className="px-4 py-1.5 rounded-full bg-foreground text-background text-[10px] uppercase tracking-widest font-bold hover:bg-foreground/80 transition-all duration-300 flex items-center gap-2"
-            >
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              Admin
-            </a>
+            <>
+              <a
+                href="/admin"
+                className="px-4 py-1.5 rounded-full bg-foreground text-background text-[10px] uppercase tracking-widest font-bold hover:bg-foreground/80 transition-all duration-300 flex items-center gap-2"
+              >
+                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                Admin
+              </a>
+              <button
+                onClick={() => signOut()}
+                className="text-[10px] uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity"
+              >
+                Sign Out
+              </button>
+            </>
           ) : (
             <a
               href="/auth"
@@ -99,6 +107,17 @@ const Navigation = () => {
             >
               {isAuthenticated ? "Dashboard" : "Admin Access"}
             </a>
+            {isAuthenticated && (
+              <button
+                onClick={() => {
+                  signOut();
+                  setIsOpen(false);
+                }}
+                className="mt-4 text-sm uppercase tracking-widest opacity-50 hover:opacity-100"
+              >
+                Log Out
+              </button>
+            )}
           </div>
         </div>
       )}

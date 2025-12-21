@@ -6,14 +6,17 @@ interface PhotoCardProps {
   category?: string;
   aspectRatio?: string | null;
   onClick: () => void;
+  priority?: boolean;
 }
 
-const PhotoCard = ({ src, title, category, aspectRatio = "4/5", onClick }: PhotoCardProps) => {
+const PhotoCard = ({ src, title, category, aspectRatio = "4/5", onClick, priority = false }: PhotoCardProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(priority);
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (priority) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -21,7 +24,7 @@ const PhotoCard = ({ src, title, category, aspectRatio = "4/5", onClick }: Photo
           observer.disconnect();
         }
       },
-      { threshold: 0.01, rootMargin: '2000px' }
+      { threshold: 0.1, rootMargin: '400px' }
     );
 
     if (cardRef.current) {

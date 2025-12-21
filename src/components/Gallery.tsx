@@ -71,6 +71,7 @@ const CollageSection = ({
                 title={photo.title ?? undefined}
                 category={photo.category ?? undefined}
                 onClick={() => onOpenLightbox(index)}
+                priority={index < 3}
               />
               {/* Hover Overlay */}
               <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
