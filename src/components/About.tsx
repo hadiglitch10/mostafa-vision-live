@@ -3,11 +3,11 @@ import aboutImage from "@/assets/about.jpeg";
 
 const About = () => {
   return (
-    <section id="about" className="py-20 md:py-40 bg-background relative overflow-hidden">
-      {/* Background Blobs (Light Purple/Red) */}
-      <div className="absolute top-[20%] right-[10%] w-[500px] h-[500px] bg-purple-500/5 rounded-full filter blur-[100px] animate-blob mix-blend-multiply dark:mix-blend-screen" />
-      <div className="absolute bottom-[0%] left-[-10%] w-[600px] h-[600px] bg-red-500/5 rounded-full filter blur-[120px] animate-blob animation-delay-4000 mix-blend-multiply dark:mix-blend-screen" />
-      <div className="absolute top-[40%] left-[20%] w-[400px] h-[400px] bg-rose-500/5 rounded-full filter blur-[80px] animate-blob animation-delay-2000 mix-blend-multiply dark:mix-blend-screen" />
+    <section id="about" className="py-16 md:py-40 bg-background relative overflow-hidden">
+      {/* Background Blobs (Light Purple/Red) - Hidden on mobile for performance */}
+      <div className="hidden md:block absolute top-[20%] right-[10%] w-[500px] h-[500px] bg-purple-500/5 rounded-full filter blur-[100px] animate-blob mix-blend-multiply dark:mix-blend-screen" />
+      <div className="hidden md:block absolute bottom-[0%] left-[-10%] w-[600px] h-[600px] bg-red-500/5 rounded-full filter blur-[120px] animate-blob animation-delay-4000 mix-blend-multiply dark:mix-blend-screen" />
+      <div className="hidden md:block absolute top-[40%] left-[20%] w-[400px] h-[400px] bg-rose-500/5 rounded-full filter blur-[80px] animate-blob animation-delay-2000 mix-blend-multiply dark:mix-blend-screen" />
 
       <div className="container relative z-10">
         <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
@@ -23,7 +23,7 @@ const About = () => {
               <span className="text-primary italic">THE LENS.</span>
             </h2>
 
-            <div className="space-y-6 text-muted-foreground font-typewriter text-sm md:text-base leading-relaxed">
+            <div className="space-y-6 text-muted-foreground font-typewriter text-base md:text-lg leading-relaxed">
               <p>
                 23-year-old concert and street photographer based in the heart of the music scene.
                 I live for the chaos of a mosh pit, the quiet intensity of a backstage moment,

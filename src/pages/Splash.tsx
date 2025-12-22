@@ -34,10 +34,10 @@ const Splash = () => {
 
                 {/* Title Stack - TYPEWRITER STYLE (Peter McKinnon inspired) */}
                 <div className="space-y-3 animate-fade-up">
-                    <h1 className="text-4xl sm:text-5xl md:text-7xl font-typewriter font-bold tracking-[0.1em] uppercase text-white mix-blend-difference leading-tight">
+                    <h1 className="text-5xl sm:text-6xl md:text-7xl font-typewriter font-bold tracking-[0.1em] uppercase text-white mix-blend-difference leading-tight">
                         Mostafa <br /> Vision
                     </h1>
-                    <p className="text-[10px] sm:text-xs md:text-sm font-typewriter tracking-[0.2em] md:tracking-[0.3em] uppercase text-white/80">
+                    <p className="text-xs sm:text-sm md:text-base font-typewriter tracking-[0.2em] md:tracking-[0.3em] uppercase text-white/80">
                         Photographer & Director
                     </p>
                 </div>
@@ -45,10 +45,10 @@ const Splash = () => {
                 {/* Enter Button - Mobile Touch Friendly */}
                 <button
                     onClick={() => navigate('/portfolio')}
-                    className="group relative inline-flex items-center justify-center gap-4 px-8 py-4 w-full sm:w-auto overflow-hidden rounded-sm bg-white text-black hover:bg-white/90 transition-all duration-500 animate-fade-up-delay active:scale-95"
+                    className="group relative inline-flex items-center justify-center gap-4 px-10 py-5 w-full sm:w-auto overflow-hidden rounded-sm bg-white text-black hover:bg-white/90 transition-all duration-500 animate-fade-up-delay active:scale-95 shadow-2xl"
                 >
-                    <span className="font-typewriter uppercase tracking-widest text-xs font-bold">Enter View</span>
-                    <MoveRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    <span className="font-typewriter uppercase tracking-widest text-sm font-bold">Enter View</span>
+                    <MoveRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
 
             </div>
