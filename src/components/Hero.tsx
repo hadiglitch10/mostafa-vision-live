@@ -43,7 +43,7 @@ const Hero = ({ heroImage }: HeroProps) => {
         <div className="absolute inset-0 bg-black/20 z-10" />
         <img
           src={heroImage}
-          alt="Concert photography by Mostafavision"
+          alt="Concert photography by Mustafavision"
           className={`w-full h-full object-cover transition-all duration-2000 ease-out ${isLoaded ? 'opacity-100 blur-0 scale-100' : 'opacity-0 blur-xl scale-110'}`}
           onLoad={() => setIsLoaded(true)}
         />
@@ -60,7 +60,7 @@ const Hero = ({ heroImage }: HeroProps) => {
 
         <div className="space-y-8 max-w-5xl mx-auto">
           <p className="text-sm md:text-base uppercase tracking-[0.4em] font-light text-white/80 animate-fade-up">
-            Mostafa Vision
+            Mustafa Vision
           </p>
 
           <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-thin tracking-tighter leading-[0.9] text-white mix-blend-overlay animate-fade-up-delay">

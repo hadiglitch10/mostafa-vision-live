@@ -35,7 +35,7 @@ const Splash = () => {
                 {/* Title Stack - TYPEWRITER STYLE (Peter McKinnon inspired) */}
                 <div className="space-y-3 animate-fade-up">
                     <h1 className="text-5xl sm:text-6xl md:text-7xl font-typewriter font-bold tracking-[0.1em] uppercase text-white mix-blend-difference leading-tight">
-                        Mostafa <br /> Vision
+                        Mustafa <br /> Vision
                     </h1>
                     <p className="text-xs sm:text-sm md:text-base font-typewriter tracking-[0.2em] md:tracking-[0.3em] uppercase text-white/80">
                         Photographer & Director

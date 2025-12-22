@@ -44,7 +44,7 @@ const About = () => {
                 {/* Actual Artist Portrait */}
                 <img
                   src={aboutImage}
-                  alt="Mostafa Vision"
+                  alt="Mustafa Vision"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
 

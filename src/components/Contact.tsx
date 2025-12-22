@@ -46,7 +46,7 @@ const Contact = () => {
         {/* Footer Credit */}
         <div className="pt-20 opacity-30 hover:opacity-100 transition-opacity duration-500">
           <p className="font-typewriter text-xs tracking-[0.5em] uppercase">
-            Mostafa Vision © {new Date().getFullYear()}
+            Mustafa Vision © {new Date().getFullYear()}
           </p>
         </div>
 

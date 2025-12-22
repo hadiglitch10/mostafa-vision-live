@@ -79,7 +79,7 @@ const Lightbox = ({ photos, currentIndex, isOpen, onClose, onNavigate }: Lightbo
   if (!isOpen || !currentPhoto) return null;
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 bg-background/98 backdrop-blur-xl animate-fade-in"
       onClick={onClose}
     >
@@ -109,7 +109,7 @@ const Lightbox = ({ photos, currentIndex, isOpen, onClose, onNavigate }: Lightbo
       </button>
 
       {/* Image Container */}
-      <div 
+      <div
         className="absolute inset-0 flex items-center justify-center p-4 md:p-20"
         onClick={(e) => e.stopPropagation()}
         onTouchStart={onTouchStart}
@@ -118,7 +118,7 @@ const Lightbox = ({ photos, currentIndex, isOpen, onClose, onNavigate }: Lightbo
       >
         <img
           src={currentPhoto.image_url}
-          alt={currentPhoto.title || "Photo by Mostafavision"}
+          alt={currentPhoto.title || "Photo by Mustafavision"}
           className="max-w-full max-h-full object-contain transition-all duration-500 ease-out"
           style={{
             animation: 'scaleIn 0.3s ease-out forwards'
@@ -147,7 +147,7 @@ const Lightbox = ({ photos, currentIndex, isOpen, onClose, onNavigate }: Lightbo
 
       {/* Progress Bar */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-border/30">
-        <div 
+        <div
           className="h-full bg-primary transition-all duration-300"
           style={{ width: `${((currentIndex + 1) / photos.length) * 100}%` }}
         />

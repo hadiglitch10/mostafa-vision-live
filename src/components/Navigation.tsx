@@ -25,7 +25,7 @@ const Navigation = () => {
   return (
     <nav
       className={cn(
-        "sticky top-0 left-0 right-0 z-50 transition-all duration-500",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
         scrolled || isOpen ? "bg-white/5 backdrop-blur-xl border-b border-white/10 py-3 shadow-lg" : "bg-transparent py-6"
       )}
     >
@@ -33,7 +33,7 @@ const Navigation = () => {
         {/* Logo */}
         <a href="#" className="flex items-center gap-3 group">
           <span className="text-lg font-heading font-light tracking-wide text-foreground">
-            MOSTAFA<span className="font-bold">VISION</span>
+            MUSTAFA<span className="font-bold">VISION</span>
           </span>
         </a>
 

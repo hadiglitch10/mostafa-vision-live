@@ -48,7 +48,7 @@ const Admin = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            <a 
+            <a
               href="/"
               target="_blank"
               rel="noopener noreferrer"
@@ -56,16 +56,16 @@ const Admin = () => {
             >
               View Site <ExternalLink size={14} />
             </a>
-            
+
             <div className="hidden sm:block h-4 w-px bg-border" />
-            
+
             <span className="text-sm text-muted-foreground hidden md:inline">
               {user?.email}
             </span>
-            
-            <Button 
-              variant="outline" 
-              size="sm" 
+
+            <Button
+              variant="outline"
+              size="sm"
               onClick={handleSignOut}
               className="gap-2"
             >
@@ -101,7 +101,7 @@ const Admin = () => {
       {/* Footer */}
       <footer className="border-t border-border/50 py-6 mt-12">
         <div className="container text-center text-sm text-muted-foreground">
-          <p>Mostafavision Admin Portal • Images auto-compressed to WebP (max 2000px)</p>
+          <p>Mustafavision Admin Portal • Images auto-compressed to WebP (max 2000px)</p>
         </div>
       </footer>
     </div>
