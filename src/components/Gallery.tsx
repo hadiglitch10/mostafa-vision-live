@@ -161,6 +161,45 @@ const StackSection = ({
   isAdmin,
   onAddPhoto,
 }: StackSectionProps) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  // Minimum swipe distance (in px) to trigger navigation
+  const minSwipeDistance = 50;
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(0); // Reset
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe && currentIndex < photos.length - 1 && !isAnimating) {
+      // Swipe left - next photo
+      setIsAnimating(true);
+      setCurrentIndex(prev => prev + 1);
+      setTimeout(() => setIsAnimating(false), 700);
+    }
+
+    if (isRightSwipe && currentIndex > 0 && !isAnimating) {
+      // Swipe right - previous photo
+      setIsAnimating(true);
+      setCurrentIndex(prev => prev - 1);
+      setTimeout(() => setIsAnimating(false), 700);
+    }
+  };
+
   return (
     <div className="py-20 container relative min-h-[600px] flex flex-col items-center justify-center gap-12">
       {/* Mobile Header */}
@@ -186,23 +225,37 @@ const StackSection = ({
         )}
       </div>
 
-      {/* Premium 3D Stack - Liquid Glass Effect */}
-      <div className="relative w-[85vw] max-w-sm h-[450px] perspective-1000 mt-4 mx-auto">
+      {/* Premium 3D Stack - Swipeable */}
+      <div
+        className="relative w-[85vw] max-w-sm h-[450px] perspective-1000 mt-4 mx-auto touch-pan-y"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         {photos.length > 0 ? (
           photos.map((photo, index) => {
-            // Limit stack depth on mobile for performance/visuals
-            if (index > 4) return null;
+            // Calculate position relative to current index
+            const position = index - currentIndex;
+
+            // Only render cards that are visible or close to visible
+            if (position < -1 || position > 4) return null;
+
+            // Cards that have been swiped away (negative position)
+            const isSwiped = position < 0;
 
             return (
               <div
                 key={photo.id}
-                className="absolute top-0 left-0 w-full h-full transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] cursor-pointer group"
+                className={`absolute top-0 left-0 w-full h-full transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] cursor-pointer group ${isSwiped ? 'pointer-events-none' : ''
+                  }`}
                 style={{
-                  transform: `translate3d(${index * 2}px, ${index * 8}px, -${index * 30}px) rotate(${index % 2 === 0 ? -3 : 3}deg)`,
-                  zIndex: 50 - index,
-                  opacity: 1 - index * 0.1,
+                  transform: isSwiped
+                    ? `translate3d(-120%, ${position * 8}px, -${Math.abs(position) * 30}px) rotate(-15deg)`
+                    : `translate3d(${position * 2}px, ${position * 8}px, -${position * 30}px) rotate(${position % 2 === 0 ? -3 : 3}deg)`,
+                  zIndex: 50 - position,
+                  opacity: isSwiped ? 0 : Math.max(0, 1 - position * 0.1),
                 }}
-                onClick={() => onOpenLightbox(index)}
+                onClick={() => !isSwiped && onOpenLightbox(index)}
               >
                 {/* Card Container with Optimized Glass (No blur on mobile) */}
                 <div className="w-full h-full rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] md:bg-white/5 md:backdrop-blur-md bg-[#111] border border-white/10 ring-1 ring-white/20 will-change-transform">
@@ -212,7 +265,7 @@ const StackSection = ({
                     title={photo.title ?? undefined}
                     category={photo.category ?? undefined}
                     aspectRatio="4/5"
-                    onClick={() => onOpenLightbox(index)}
+                    onClick={() => !isSwiped && onOpenLightbox(index)}
                   />
                 </div>
               </div>
@@ -225,9 +278,24 @@ const StackSection = ({
         )}
       </div>
 
-      <div className="text-center mt-8">
+      {/* Progress Indicator */}
+      {photos.length > 0 && (
+        <div className="flex gap-2 justify-center mt-4">
+          {photos.slice(0, Math.min(photos.length, 10)).map((_, index) => (
+            <div
+              key={index}
+              className={`h-1 rounded-full transition-all duration-300 ${index === currentIndex
+                  ? 'w-8 bg-primary'
+                  : 'w-1 bg-muted-foreground/30'
+                }`}
+            />
+          ))}
+        </div>
+      )}
+
+      <div className="text-center mt-4">
         <span className="text-[10px] font-typewriter tracking-widest text-muted-foreground uppercase opacity-50">
-          Swipe / Tap to View
+          Swipe to Browse • Tap to View
         </span>
       </div>
     </div>
