@@ -44,9 +44,20 @@ const Contact = () => {
         </div>
 
         {/* Footer Credit */}
-        <div className="pt-20 opacity-30 hover:opacity-100 transition-opacity duration-500">
+        <div className="pt-20 space-y-3 opacity-30 hover:opacity-100 transition-opacity duration-500">
           <p className="font-typewriter text-xs tracking-[0.5em] uppercase">
             Mustafa Vision © {new Date().getFullYear()}
+          </p>
+          <p className="font-typewriter text-[10px] tracking-wider opacity-60">
+            Website by{" "}
+            <a
+              href="https://www.instagram.com/hadiglitch/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-primary transition-colors"
+            >
+              @hadiglitch
+            </a>
           </p>
         </div>
 
