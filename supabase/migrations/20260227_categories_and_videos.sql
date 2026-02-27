@@ -17,10 +17,12 @@ create table if not exists public.categories (
 -- RLS for categories
 alter table public.categories enable row level security;
 
+drop policy if exists "categories_public_read" on public.categories;
 create policy "categories_public_read"
   on public.categories for select
   using (true);
 
+drop policy if exists "categories_auth_write" on public.categories;
 create policy "categories_auth_write"
   on public.categories for all
   using (auth.role() = 'authenticated')
@@ -50,11 +52,37 @@ create table if not exists public.videos (
 -- RLS for videos
 alter table public.videos enable row level security;
 
+drop policy if exists "videos_public_read" on public.videos;
 create policy "videos_public_read"
   on public.videos for select
   using (true);
 
-create policy "videos_auth_write"
+drop policy if exists "videos_auth_all" on public.videos;
+drop policy if exists "videos_auth_write" on public.videos;
+create policy "videos_auth_all"
   on public.videos for all
   using (auth.role() = 'authenticated')
   with check (auth.role() = 'authenticated');
+
+
+-- 3. STORAGE POLICIES (for portfolio-videos bucket)
+-- Note: User MUST manually create the 'portfolio-videos' bucket in Supabase dashboard first
+
+insert into storage.buckets (id, name, public)
+values ('portfolio-videos', 'portfolio-videos', true)
+on conflict (id) do nothing;
+
+drop policy if exists "videos_storage_public_read" on storage.objects;
+create policy "videos_storage_public_read"
+  on storage.objects for select
+  using (bucket_id = 'portfolio-videos');
+
+drop policy if exists "videos_storage_auth_upload" on storage.objects;
+create policy "videos_storage_auth_upload"
+  on storage.objects for insert
+  with check (bucket_id = 'portfolio-videos' and auth.role() = 'authenticated');
+
+drop policy if exists "videos_storage_auth_delete" on storage.objects;
+create policy "videos_storage_auth_delete"
+  on storage.objects for delete
+  using (bucket_id = 'portfolio-videos' and auth.role() = 'authenticated');

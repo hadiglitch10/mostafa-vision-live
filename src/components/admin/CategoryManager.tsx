@@ -295,16 +295,22 @@ const CategoryManager = () => {
     return (
         <div className="bg-card glass-panel rounded-xl p-4 sm:p-8 border-border/50 space-y-6 sm:space-y-8">
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <h3 className="text-xl sm:text-2xl font-bold font-heading flex items-center gap-2 sm:gap-3">
-                    <div className="p-1.5 sm:p-2 bg-primary/10 rounded-lg">
-                        <FolderOpen size={20} className="text-primary sm:w-6 sm:h-6" />
+            <div className="flex flex-row items-center justify-between gap-4">
+                <h3 className="text-xl sm:text-2xl font-bold font-heading flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                    <div className="p-1.5 sm:p-2 bg-primary/10 rounded-lg shrink-0">
+                        <FolderOpen size={18} className="text-primary sm:w-6 sm:h-6" />
                     </div>
-                    Categories
+                    <span className="truncate">Categories</span>
                 </h3>
                 {!showAdd && (
-                    <Button size="sm" onClick={() => setShowAdd(true)} className="gap-1.5 sm:gap-2 text-[10px] sm:text-sm h-8 sm:h-9">
-                        <Plus size={14} className="sm:w-4 sm:h-4" /> Add
+                    <Button
+                        size="sm"
+                        onClick={() => setShowAdd(true)}
+                        className="gap-1.5 sm:gap-2 text-[11px] sm:text-sm h-8 sm:h-9 px-3 shrink-0"
+                    >
+                        <Plus size={14} className="sm:w-4 sm:h-4" />
+                        <span className="hidden xs:inline">Add Category</span>
+                        <span className="xs:hidden">Add</span>
                     </Button>
                 )}
             </div>
