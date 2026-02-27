@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { Video } from "lucide-react";
 
 interface PhotoCardProps {
   src: string;
@@ -42,19 +43,27 @@ const PhotoCard = ({ src, title, category, aspectRatio = "4/5", onClick, priorit
       onClick={onClick}
     >
       {/* Skeleton loader */}
-      {!isLoaded && (
-        <div className="absolute inset-0 bg-card animate-pulse" />
-      )}
-
-      {isVisible && (
-        <img
-          src={src}
-          alt={title || "Photography by Mustafavision"}
-          loading="lazy"
-          decoding="async"
-          className={`w-full h-full object-cover transition-all duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'} group-hover:scale-110 will-change-transform`}
-          onLoad={() => setIsLoaded(true)}
-        />
+      {isVisible ? (
+        <>
+          {!isLoaded && (
+            <div className="absolute inset-0 bg-card animate-pulse flex items-center justify-center">
+              {!src && <Video size={32} className="opacity-10" />}
+            </div>
+          )}
+          <img
+            src={src}
+            alt={title || "Photography by Mustafavision"}
+            loading="lazy"
+            decoding="async"
+            className={`w-full h-full object-cover transition-all duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'} group-hover:scale-110 will-change-transform`}
+            onLoad={() => setIsLoaded(true)}
+            onError={() => setIsLoaded(true)} // Treat error as loaded to show whatever placeholder exists
+          />
+        </>
+      ) : (
+        <div className="absolute inset-0 bg-card flex items-center justify-center">
+          <Video size={32} className="opacity-10" />
+        </div>
       )}
 
       {/* Hover Overlay with Title */}
