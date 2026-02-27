@@ -104,20 +104,20 @@ const Admin = () => {
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex gap-1 p-1 bg-muted/40 rounded-xl w-fit border border-border/50">
+        <div className="flex gap-1 p-1 bg-muted/40 rounded-xl border border-border/50 w-full sm:w-fit">
           {TABS.map(({ key, label, icon: Icon }) => (
             <button
               key={key}
               onClick={() => setActiveTab(key)}
               className={cn(
-                'flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
+                'flex flex-1 sm:flex-none items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
                 activeTab === key
                   ? 'bg-card shadow-sm text-foreground border border-border/50'
                   : 'text-muted-foreground hover:text-foreground hover:bg-muted/60'
               )}
             >
               <Icon size={15} />
-              {label}
+              <span className="hidden xs:inline sm:inline">{label}</span>
             </button>
           ))}
         </div>

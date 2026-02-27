@@ -135,10 +135,10 @@ const StackSection = ({
   };
 
   return (
-    <div className="py-20 container relative min-h-[600px] flex flex-col items-center justify-center gap-12">
+    <div className="pt-28 pb-16 container relative min-h-[600px] flex flex-col items-center justify-center gap-8">
       {/* Mobile Header */}
       <div className="relative z-10 max-w-md text-center">
-        <div className="absolute top-[-2rem] left-1/2 -translate-x-1/2 text-[8rem] font-bold text-foreground/5 select-none -z-10 font-heading italic leading-none whitespace-nowrap">
+        <div className="absolute top-[-2rem] left-1/2 -translate-x-1/2 text-[6rem] font-bold text-foreground/5 select-none -z-10 font-heading italic leading-none whitespace-nowrap">
           {number}
         </div>
 
@@ -161,7 +161,7 @@ const StackSection = ({
 
       {/* Premium 3D Stack - Swipeable */}
       <div
-        className="relative w-[85vw] max-w-sm h-[450px] perspective-1000 mt-4 mx-auto touch-pan-y"
+        className="relative w-[82vw] max-w-sm h-[420px] perspective-1000 mt-2 mx-auto touch-pan-y overflow-visible"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
