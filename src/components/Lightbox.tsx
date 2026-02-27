@@ -1,44 +1,38 @@
 import { useEffect, useCallback, useState } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
-
-interface Photo {
-  id: string;
-  image_url: string;
-  title?: string | null;
-  category?: string | null;
-}
+import { MediaItem } from "./Gallery";
 
 interface LightboxProps {
-  photos: Photo[];
+  items: MediaItem[];
   currentIndex: number;
   isOpen: boolean;
   onClose: () => void;
   onNavigate: (index: number) => void;
 }
 
-const Lightbox = ({ photos, currentIndex, isOpen, onClose, onNavigate }: LightboxProps) => {
+const Lightbox = ({ items, currentIndex, isOpen, onClose, onNavigate }: LightboxProps) => {
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  const currentPhoto = photos[currentIndex];
+  const currentItem = items[currentIndex];
   const minSwipeDistance = 50;
 
   const handlePrev = useCallback(() => {
     if (isAnimating) return;
     setIsAnimating(true);
-    const newIndex = currentIndex === 0 ? photos.length - 1 : currentIndex - 1;
+    const newIndex = currentIndex === 0 ? items.length - 1 : currentIndex - 1;
     onNavigate(newIndex);
     setTimeout(() => setIsAnimating(false), 300);
-  }, [currentIndex, photos.length, onNavigate, isAnimating]);
+  }, [currentIndex, items.length, onNavigate, isAnimating]);
 
   const handleNext = useCallback(() => {
     if (isAnimating) return;
     setIsAnimating(true);
-    const newIndex = currentIndex === photos.length - 1 ? 0 : currentIndex + 1;
+    const newIndex = currentIndex === items.length - 1 ? 0 : currentIndex + 1;
     onNavigate(newIndex);
     setTimeout(() => setIsAnimating(false), 300);
-  }, [currentIndex, photos.length, onNavigate, isAnimating]);
+  }, [currentIndex, items.length, onNavigate, isAnimating]);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (!isOpen) return;
@@ -76,7 +70,7 @@ const Lightbox = ({ photos, currentIndex, isOpen, onClose, onNavigate }: Lightbo
     if (isRightSwipe) handlePrev();
   };
 
-  if (!isOpen || !currentPhoto) return null;
+  if (!isOpen || !currentItem) return null;
 
   return (
     <div
@@ -96,19 +90,19 @@ const Lightbox = ({ photos, currentIndex, isOpen, onClose, onNavigate }: Lightbo
       <button
         onClick={(e) => { e.stopPropagation(); handlePrev(); }}
         className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-50 p-4 text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-110 hidden md:flex items-center justify-center"
-        aria-label="Previous photo"
+        aria-label="Previous media"
       >
         <ChevronLeft size={48} strokeWidth={1} />
       </button>
       <button
         onClick={(e) => { e.stopPropagation(); handleNext(); }}
         className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-50 p-4 text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-110 hidden md:flex items-center justify-center"
-        aria-label="Next photo"
+        aria-label="Next media"
       >
         <ChevronRight size={48} strokeWidth={1} />
       </button>
 
-      {/* Image Container */}
+      {/* Media Container */}
       <div
         className="absolute inset-0 flex items-center justify-center p-4 md:p-20"
         onClick={(e) => e.stopPropagation()}
@@ -116,31 +110,39 @@ const Lightbox = ({ photos, currentIndex, isOpen, onClose, onNavigate }: Lightbo
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       >
-        <img
-          src={currentPhoto.image_url}
-          alt={currentPhoto.title || "Photo by Mustafavision"}
-          className="max-w-full max-h-full object-contain transition-all duration-500 ease-out"
-          style={{
-            animation: 'scaleIn 0.3s ease-out forwards'
-          }}
-        />
+        {currentItem.type === 'video' ? (
+          <video
+            src={currentItem.video_url}
+            controls
+            autoPlay
+            className="max-w-full max-h-full rounded-lg shadow-2xl"
+            style={{ animation: 'scaleIn 0.3s ease-out forwards' }}
+          />
+        ) : (
+          <img
+            src={currentItem.image_url}
+            alt={currentItem.title || "Photography by Mustafavision"}
+            className="max-w-full max-h-full object-contain transition-all duration-500 ease-out"
+            style={{ animation: 'scaleIn 0.3s ease-out forwards' }}
+          />
+        )}
       </div>
 
-      {/* Photo Info - Bottom */}
+      {/* Media Info - Bottom */}
       <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 bg-gradient-to-t from-background/80 to-transparent pointer-events-none">
         <div className="container flex items-end justify-between">
           <div>
-            {currentPhoto.category && (
+            {currentItem.category && (
               <span className="text-xs uppercase tracking-[0.2em] text-primary">
-                {currentPhoto.category}
+                {currentItem.category}
               </span>
             )}
-            {currentPhoto.title && (
-              <p className="text-foreground font-medium text-lg mt-1">{currentPhoto.title}</p>
+            {currentItem.title && (
+              <p className="text-foreground font-medium text-lg mt-1">{currentItem.title}</p>
             )}
           </div>
           <p className="text-muted-foreground text-sm font-mono">
-            {String(currentIndex + 1).padStart(2, '0')} / {String(photos.length).padStart(2, '0')}
+            {String(currentIndex + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}
           </p>
         </div>
       </div>
@@ -149,7 +151,7 @@ const Lightbox = ({ photos, currentIndex, isOpen, onClose, onNavigate }: Lightbo
       <div className="absolute top-0 left-0 right-0 h-1 bg-border/30">
         <div
           className="h-full bg-primary transition-all duration-300"
-          style={{ width: `${((currentIndex + 1) / photos.length) * 100}%` }}
+          style={{ width: `${((currentIndex + 1) / items.length) * 100}%` }}
         />
       </div>
     </div>

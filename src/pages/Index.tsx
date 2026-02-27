@@ -5,11 +5,15 @@ import About from "@/components/About";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import { usePhotos, useFeaturedPhoto } from "@/hooks/usePhotos";
+import { useVideos } from "@/hooks/useVideos";
 import heroImage from "@/assets/hero.jpeg";
 
 const Index = () => {
-  const { data: photos = [], isLoading } = usePhotos();
+  const { data: photos = [], isLoading: photosLoading } = usePhotos();
+  const { data: videos = [], isLoading: videosLoading } = useVideos();
   const { data: featuredPhoto } = useFeaturedPhoto();
+
+  const isLoading = photosLoading || videosLoading;
 
   // Force static hero image as per user request
   const currentHero = heroImage;
@@ -25,7 +29,7 @@ const Index = () => {
 
       <Navigation />
       <Hero heroImage={currentHero} />
-      <Gallery photos={photos} />
+      <Gallery photos={photos} videos={videos} />
       <About />
       <Contact />
       <Footer />

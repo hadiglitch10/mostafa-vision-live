@@ -2,16 +2,19 @@ import { useState } from "react";
 import PhotoCard from "./PhotoCard";
 import Lightbox from "./Lightbox";
 import { Photo } from "@/hooks/usePhotos";
+import { Video } from "@/hooks/useVideos";
 import { useAuth } from "@/hooks/useAuth";
 import { useCategories } from "@/hooks/useCategories";
-import { Plus, Loader2 } from "lucide-react";
+import { Plus, Loader2, Play } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
+export type MediaItem = (Photo & { type: 'photo' }) | (Video & { type: 'video' });
 
 interface StackSectionProps {
   number: string;
   title: string;
   subtitle: string;
-  photos: Photo[];
+  items: MediaItem[];
   onOpenLightbox: (index: number) => void;
   isAdmin: boolean;
   onAddPhoto: () => void;
@@ -23,7 +26,7 @@ const CollageSection = ({
   number,
   title,
   subtitle,
-  photos,
+  items,
   onOpenLightbox,
   isAdmin,
   onAddPhoto
@@ -59,21 +62,29 @@ const CollageSection = ({
       </div>
 
       {/* Masonry Grid - Desktop */}
-      {photos.length > 0 ? (
+      {items.length > 0 ? (
         <div className="columns-2 md:columns-3 gap-6 space-y-6">
-          {photos.map((photo, index) => (
+          {items.map((item, index) => (
             <div
-              key={photo.id}
+              key={item.id}
               className="break-inside-avoid relative group overflow-hidden rounded-sm cursor-pointer shadow-md hover:shadow-xl transition-all duration-300"
               onClick={() => onOpenLightbox(index)}
             >
               <PhotoCard
-                src={photo.image_url}
-                title={photo.title ?? undefined}
-                category={photo.category ?? undefined}
+                src={item.type === 'photo' ? item.image_url : (item.thumbnail_url || '')}
+                title={item.title ?? undefined}
+                category={item.category ?? undefined}
                 onClick={() => onOpenLightbox(index)}
                 priority={index < 3}
               />
+
+              {/* Video Indicator */}
+              {item.type === 'video' && (
+                <div className="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white">
+                  <Play size={16} fill="currentColor" />
+                </div>
+              )}
+
               {/* Hover Overlay */}
               <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
             </div>
@@ -81,7 +92,7 @@ const CollageSection = ({
         </div>
       ) : (
         <div className="text-center py-20 border border-dashed border-muted-foreground/20 rounded-lg">
-          <p className="font-typewriter text-muted-foreground">No photos in {title} yet.</p>
+          <p className="font-typewriter text-muted-foreground">No content in {title} yet.</p>
         </div>
       )}
     </div>
@@ -93,7 +104,7 @@ const StackSection = ({
   number,
   title,
   subtitle,
-  photos,
+  items,
   onOpenLightbox,
   isAdmin,
   onAddPhoto,
@@ -121,7 +132,7 @@ const StackSection = ({
     const isLeftSwipe = distance > minSwipeDistance;
     const isRightSwipe = distance < -minSwipeDistance;
 
-    if (isLeftSwipe && currentIndex < photos.length - 1 && !isAnimating) {
+    if (isLeftSwipe && currentIndex < items.length - 1 && !isAnimating) {
       setIsAnimating(true);
       setCurrentIndex(prev => prev + 1);
       setTimeout(() => setIsAnimating(false), 700);
@@ -166,8 +177,8 @@ const StackSection = ({
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {photos.length > 0 ? (
-          photos.map((photo, index) => {
+        {items.length > 0 ? (
+          items.map((item, index) => {
             const position = index - currentIndex;
 
             if (position < -1 || position > 4) return null;
@@ -176,7 +187,7 @@ const StackSection = ({
 
             return (
               <div
-                key={photo.id}
+                key={item.id}
                 className={`absolute top-0 left-0 w-full h-full transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] cursor-pointer group ${isSwiped ? 'pointer-events-none' : ''
                   }`}
                 style={{
@@ -191,12 +202,19 @@ const StackSection = ({
                 <div className="w-full h-full rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] md:bg-white/5 md:backdrop-blur-md bg-[#111] border border-white/10 ring-1 ring-white/20 will-change-transform">
                   <div className="absolute inset-0 z-10 bg-gradient-to-tr from-white/20 to-transparent opacity-50 pointer-events-none" />
                   <PhotoCard
-                    src={photo.image_url}
-                    title={photo.title ?? undefined}
-                    category={photo.category ?? undefined}
+                    src={item.type === 'photo' ? item.image_url : (item.thumbnail_url || '')}
+                    title={item.title ?? undefined}
+                    category={item.category ?? undefined}
                     aspectRatio="4/5"
                     onClick={() => !isSwiped && onOpenLightbox(index)}
                   />
+
+                  {/* Video Indicator */}
+                  {item.type === 'video' && (
+                    <div className="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white">
+                      <Play size={16} fill="currentColor" />
+                    </div>
+                  )}
                 </div>
               </div>
             );
@@ -209,9 +227,9 @@ const StackSection = ({
       </div>
 
       {/* Progress Indicator */}
-      {photos.length > 0 && (
+      {items.length > 0 && (
         <div className="flex gap-2 justify-center mt-4">
-          {photos.slice(0, Math.min(photos.length, 10)).map((_, index) => (
+          {items.slice(0, Math.min(items.length, 10)).map((_, index) => (
             <div
               key={index}
               className={`h-1 rounded-full transition-all duration-300 ${index === currentIndex
@@ -234,30 +252,43 @@ const StackSection = ({
 
 interface GalleryProps {
   photos: Photo[];
+  videos: Video[];
 }
 
-const Gallery = ({ photos }: GalleryProps) => {
+const Gallery = ({ photos, videos }: GalleryProps) => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
-  const [currentSectionPhotos, setCurrentSectionPhotos] = useState<Photo[]>([]);
+  const [currentSectionItems, setCurrentSectionItems] = useState<MediaItem[]>([]);
 
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const { data: categories = [], isLoading: categoriesLoading } = useCategories();
 
+  // Combine media items
+  const allMedia: MediaItem[] = [
+    ...photos.map(p => ({ ...p, type: 'photo' as const })),
+    ...videos.map(v => ({ ...v, type: 'video' as const }))
+  ].sort((a, b) => {
+    // Both tables have sort_order and created_at
+    if ((a.sort_order || 0) !== (b.sort_order || 0)) {
+      return (a.sort_order || 0) - (b.sort_order || 0);
+    }
+    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  });
+
   // Build section map dynamically from DB categories
   const sectionMap = categories.reduce((acc, cat, idx) => {
-    const sectionPhotos = photos.filter(p => p.section === cat.value || (!p.section && cat.value === categories[0]?.value));
+    const sectionItems = allMedia.filter(m => m.section === cat.value || (!m.section && cat.value === categories[0]?.value));
     acc[cat.value] = {
       cat,
       number: String(idx + 1).padStart(2, '0'),
-      photos: sectionPhotos,
+      items: sectionItems,
     };
     return acc;
-  }, {} as Record<string, { cat: typeof categories[0]; number: string; photos: Photo[] }>);
+  }, {} as Record<string, { cat: typeof categories[0]; number: string; items: MediaItem[] }>);
 
-  const openLightbox = (sectionPhotos: Photo[], index: number) => {
-    setCurrentSectionPhotos(sectionPhotos);
+  const openLightbox = (sectionItems: MediaItem[], index: number) => {
+    setCurrentSectionItems(sectionItems);
     setCurrentPhotoIndex(index);
     setLightboxOpen(true);
   };
@@ -266,7 +297,7 @@ const Gallery = ({ photos }: GalleryProps) => {
     navigate('/admin');
   };
 
-  const hasPhotos = photos.length > 0;
+  const hasMedia = allMedia.length > 0;
 
   if (categoriesLoading) {
     return (
@@ -281,15 +312,15 @@ const Gallery = ({ photos }: GalleryProps) => {
       {/* Background aesthetics */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white/5 via-background to-background pointer-events-none -z-10" />
 
-      {hasPhotos || isAuthenticated ? (
+      {hasMedia || isAuthenticated ? (
         <div className="space-y-0 divide-y divide-border/20">
           {categories.map((cat, idx) => {
             const entry = sectionMap[cat.value];
             if (!entry) return null;
-            const { number, photos: sectionPhotos } = entry;
+            const { number, items: sectionItems } = entry;
 
             // Skip empty sections for non-admin visitors
-            if (!isAuthenticated && sectionPhotos.length === 0) return null;
+            if (!isAuthenticated && sectionItems.length === 0) return null;
 
             return (
               <div key={cat.value}>
@@ -299,8 +330,8 @@ const Gallery = ({ photos }: GalleryProps) => {
                     number={number}
                     title={cat.label}
                     subtitle={cat.subtitle || ''}
-                    photos={sectionPhotos}
-                    onOpenLightbox={(index) => openLightbox(sectionPhotos, index)}
+                    items={sectionItems}
+                    onOpenLightbox={(index) => openLightbox(sectionItems, index)}
                     isAdmin={isAuthenticated}
                     onAddPhoto={handleAddPhoto}
                   />
@@ -311,8 +342,8 @@ const Gallery = ({ photos }: GalleryProps) => {
                     number={number}
                     title={cat.label}
                     subtitle={cat.subtitle || ''}
-                    photos={sectionPhotos}
-                    onOpenLightbox={(index) => openLightbox(sectionPhotos, index)}
+                    items={sectionItems}
+                    onOpenLightbox={(index) => openLightbox(sectionItems, index)}
                     isAdmin={isAuthenticated}
                     onAddPhoto={handleAddPhoto}
                     isMobileStack={true}
@@ -324,13 +355,13 @@ const Gallery = ({ photos }: GalleryProps) => {
         </div>
       ) : (
         <div className="container text-center py-40 text-muted-foreground">
-          <p className="text-2xl font-light font-typewriter">No photos uploaded yet.</p>
+          <p className="text-2xl font-light font-typewriter">No content uploaded yet.</p>
           <p className="text-base mt-4 text-primary font-typewriter">Use the admin portal to publish your work.</p>
         </div>
       )}
 
       <Lightbox
-        photos={currentSectionPhotos}
+        items={currentSectionItems}
         currentIndex={currentPhotoIndex}
         isOpen={lightboxOpen}
         onClose={() => setLightboxOpen(false)}

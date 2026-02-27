@@ -11,6 +11,7 @@ export interface Photo {
   featured: boolean | null;
   sort_order: number | null;
   created_at: string;
+  type?: 'photo';
 }
 
 export const usePhotos = () => {
@@ -24,7 +25,7 @@ export const usePhotos = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data as Photo[];
+      return (data || []).map(p => ({ ...p, type: 'photo' as const })) as Photo[];
     },
   });
 };
@@ -74,9 +75,9 @@ export const useSectionedPhotos = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      
+
       const photos = data as Photo[];
-      
+
       // Group by section
       const sections = {
         concerts: photos.filter(p => p.section === 'concerts'),
