@@ -1,14 +1,26 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
-import { LogOut, Camera, ExternalLink } from 'lucide-react';
+import { LogOut, Camera, ExternalLink, FolderOpen, Video, Image } from 'lucide-react';
 import PhotoUpload from '@/components/admin/PhotoUpload';
 import PhotoGrid from '@/components/admin/PhotoGrid';
+import CategoryManager from '@/components/admin/CategoryManager';
+import VideoUpload from '@/components/admin/VideoUpload';
+import { cn } from '@/lib/utils';
+
+type Tab = 'photos' | 'categories' | 'videos';
+
+const TABS: { key: Tab; label: string; icon: React.ElementType }[] = [
+  { key: 'photos', label: 'Photos', icon: Image },
+  { key: 'categories', label: 'Categories', icon: FolderOpen },
+  { key: 'videos', label: 'Videos', icon: Video },
+];
 
 const Admin = () => {
   const { user, loading, signOut, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<Tab>('photos');
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -91,11 +103,40 @@ const Admin = () => {
           </div>
         </div>
 
-        {/* Upload Form */}
-        <PhotoUpload />
+        {/* Tab Navigation */}
+        <div className="flex gap-1 p-1 bg-muted/40 rounded-xl w-fit border border-border/50">
+          {TABS.map(({ key, label, icon: Icon }) => (
+            <button
+              key={key}
+              onClick={() => setActiveTab(key)}
+              className={cn(
+                'flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
+                activeTab === key
+                  ? 'bg-card shadow-sm text-foreground border border-border/50'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/60'
+              )}
+            >
+              <Icon size={15} />
+              {label}
+            </button>
+          ))}
+        </div>
 
-        {/* Photo Grid */}
-        <PhotoGrid />
+        {/* Tab Content */}
+        {activeTab === 'photos' && (
+          <div className="space-y-8">
+            <PhotoUpload />
+            <PhotoGrid />
+          </div>
+        )}
+
+        {activeTab === 'categories' && (
+          <CategoryManager />
+        )}
+
+        {activeTab === 'videos' && (
+          <VideoUpload />
+        )}
       </main>
 
       {/* Footer */}

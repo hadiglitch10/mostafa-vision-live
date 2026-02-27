@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Trash2, Star, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { useCategories } from '@/hooks/useCategories';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,15 +27,20 @@ interface Photo {
   created_at: string;
 }
 
-const SECTION_LABELS: Record<string, string> = {
-  concerts: '01 CONCERTS',
-  street: '02 STREET',
-  edits: '03 EDITS',
-};
 
 const PhotoGrid = () => {
   const queryClient = useQueryClient();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const { data: categories = [] } = useCategories();
+
+  const getSectionLabel = (value: string) => {
+    const cat = categories.find(c => c.value === value);
+    if (cat) {
+      const idx = categories.indexOf(cat) + 1;
+      return `${String(idx).padStart(2, '0')} ${cat.label.toUpperCase()}`;
+    }
+    return value.toUpperCase();
+  };
 
   const { data: photos = [], isLoading } = useQuery({
     queryKey: ['admin-photos'],
@@ -43,7 +49,7 @@ const PhotoGrid = () => {
         .from('photos')
         .select('*')
         .order('created_at', { ascending: false });
-      
+
       if (error) throw error;
       return data as Photo[];
     },
@@ -54,7 +60,7 @@ const PhotoGrid = () => {
       // Extract filename from URL to delete from storage
       const urlParts = photo.image_url.split('/');
       const filename = urlParts[urlParts.length - 1];
-      
+
       // Delete from storage (ignore errors as file might not exist)
       await supabase.storage
         .from('portfolio-images')
@@ -65,7 +71,7 @@ const PhotoGrid = () => {
         .from('photos')
         .delete()
         .eq('id', photo.id);
-      
+
       if (error) throw error;
     },
     onSuccess: () => {
@@ -95,7 +101,7 @@ const PhotoGrid = () => {
         .from('photos')
         .update({ featured })
         .eq('id', id);
-      
+
       if (error) throw error;
     },
     onSuccess: () => {
@@ -144,9 +150,9 @@ const PhotoGrid = () => {
       {Object.entries(groupedPhotos).map(([section, sectionPhotos]) => (
         <div key={section} className="space-y-4">
           <h4 className="text-sm uppercase tracking-widest text-primary font-medium">
-            {SECTION_LABELS[section] || section}
+            {getSectionLabel(section)}
           </h4>
-          
+
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {sectionPhotos.map((photo) => (
               <div
@@ -159,7 +165,7 @@ const PhotoGrid = () => {
                   className="w-full h-full object-cover"
                   loading="lazy"
                 />
-                
+
                 {/* Overlay */}
                 <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col justify-between p-3">
                   <div className="flex justify-end gap-1">
@@ -172,7 +178,7 @@ const PhotoGrid = () => {
                     >
                       <Star size={14} className={photo.featured ? 'fill-current' : ''} />
                     </Button>
-                    
+
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button
@@ -209,7 +215,7 @@ const PhotoGrid = () => {
                       </AlertDialogContent>
                     </AlertDialog>
                   </div>
-                  
+
                   <div>
                     {photo.title && (
                       <p className="text-sm font-medium truncate">{photo.title}</p>

@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import PhotoCard from "./PhotoCard";
 import Lightbox from "./Lightbox";
 import { Photo } from "@/hooks/usePhotos";
 import { useAuth } from "@/hooks/useAuth";
-import { Plus } from "lucide-react";
+import { useCategories } from "@/hooks/useCategories";
+import { Plus, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface StackSectionProps {
@@ -87,71 +88,7 @@ const CollageSection = ({
   );
 }
 
-// Reusable Tight Masonry (Desktop Only) - Kept for reference but not used currently per request
-const TightMasonrySection = ({
-  number,
-  title,
-  subtitle,
-  photos,
-  onOpenLightbox,
-  isAdmin,
-  onAddPhoto
-}: StackSectionProps) => {
-  return (
-    <div className="py-20 md:py-32 container relative hidden md:block">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row items-center justify-between mb-16 relative z-10">
-        <div className="text-center md:text-left">
-          <div className="absolute top-[-4rem] left-[-2rem] text-[8rem] md:text-[12rem] font-bold text-foreground/5 select-none -z-10 font-heading italic leading-none">
-            {number}
-          </div>
-          <h3 className="text-4xl md:text-6xl font-normal font-typewriter uppercase tracking-tighter text-foreground bg-background/50 backdrop-blur-sm p-2 rounded-lg inline-block">
-            {title}
-          </h3>
-          <div className="block mt-2">
-            <p className="font-typewriter text-sm tracking-widest text-muted-foreground bg-background/50 backdrop-blur-sm p-1 inline-block">
-              {subtitle}
-            </p>
-          </div>
-        </div>
-        {isAdmin && (
-          <button onClick={onAddPhoto} className="mt-6 md:mt-0 p-3 rounded-full bg-foreground text-background hover:scale-110 transition-transform shadow-lg group active:scale-95">
-            <Plus size={24} className="group-hover:rotate-90 transition-transform duration-300" />
-          </button>
-        )}
-      </div>
-
-      {/* Tight Masonry Grid */}
-      {photos.length > 0 ? (
-        <div className="columns-2 md:columns-3 gap-4 space-y-4">
-          {photos.map((photo, index) => (
-            <div
-              key={photo.id}
-              className="break-inside-avoid relative group overflow-hidden cursor-pointer rounded-lg shadow-sm"
-              onClick={() => onOpenLightbox(index)}
-            >
-              <img
-                src={photo.image_url}
-                alt={photo.title || 'Event Photo'}
-                className="w-full h-auto block hover:scale-105 transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none flex items-end p-4">
-                <p className="text-white font-typewriter text-xs tracking-widest uppercase">{photo.category || 'Event'}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-20 border border-dashed border-muted-foreground/20 rounded-lg">
-          <p className="font-typewriter text-muted-foreground">No photos in {title} yet.</p>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// 3D Stack / Card Component (Mobile Optimized, but also works on Desktop if needed)
+// 3D Stack / Card Component (Mobile Optimized)
 const StackSection = ({
   number,
   title,
@@ -166,11 +103,10 @@ const StackSection = ({
   const [touchEnd, setTouchEnd] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Minimum swipe distance (in px) to trigger navigation
   const minSwipeDistance = 50;
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchEnd(0); // Reset
+    setTouchEnd(0);
     setTouchStart(e.targetTouches[0].clientX);
   };
 
@@ -186,14 +122,12 @@ const StackSection = ({
     const isRightSwipe = distance < -minSwipeDistance;
 
     if (isLeftSwipe && currentIndex < photos.length - 1 && !isAnimating) {
-      // Swipe left - next photo
       setIsAnimating(true);
       setCurrentIndex(prev => prev + 1);
       setTimeout(() => setIsAnimating(false), 700);
     }
 
     if (isRightSwipe && currentIndex > 0 && !isAnimating) {
-      // Swipe right - previous photo
       setIsAnimating(true);
       setCurrentIndex(prev => prev - 1);
       setTimeout(() => setIsAnimating(false), 700);
@@ -234,13 +168,10 @@ const StackSection = ({
       >
         {photos.length > 0 ? (
           photos.map((photo, index) => {
-            // Calculate position relative to current index
             const position = index - currentIndex;
 
-            // Only render cards that are visible or close to visible
             if (position < -1 || position > 4) return null;
 
-            // Cards that have been swiped away (negative position)
             const isSwiped = position < 0;
 
             return (
@@ -257,7 +188,6 @@ const StackSection = ({
                 }}
                 onClick={() => !isSwiped && onOpenLightbox(index)}
               >
-                {/* Card Container with Optimized Glass (No blur on mobile) */}
                 <div className="w-full h-full rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] md:bg-white/5 md:backdrop-blur-md bg-[#111] border border-white/10 ring-1 ring-white/20 will-change-transform">
                   <div className="absolute inset-0 z-10 bg-gradient-to-tr from-white/20 to-transparent opacity-50 pointer-events-none" />
                   <PhotoCard
@@ -285,8 +215,8 @@ const StackSection = ({
             <div
               key={index}
               className={`h-1 rounded-full transition-all duration-300 ${index === currentIndex
-                  ? 'w-8 bg-primary'
-                  : 'w-1 bg-muted-foreground/30'
+                ? 'w-8 bg-primary'
+                : 'w-1 bg-muted-foreground/30'
                 }`}
             />
           ))}
@@ -313,37 +243,19 @@ const Gallery = ({ photos }: GalleryProps) => {
 
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const { data: categories = [], isLoading: categoriesLoading } = useCategories();
 
-  // Mapping for fixing labels if they default to "concert"
-  const getSectionLabel = (section: string | null | undefined, originalCategory: string | null | undefined) => {
-    if (originalCategory && originalCategory.toLowerCase() !== 'concert') return originalCategory;
+  // Build section map dynamically from DB categories
+  const sectionMap = categories.reduce((acc, cat, idx) => {
+    const sectionPhotos = photos.filter(p => p.section === cat.value || (!p.section && cat.value === categories[0]?.value));
+    acc[cat.value] = {
+      cat,
+      number: String(idx + 1).padStart(2, '0'),
+      photos: sectionPhotos,
+    };
+    return acc;
+  }, {} as Record<string, { cat: typeof categories[0]; number: string; photos: Photo[] }>);
 
-    switch (section) {
-      case 'concerts': return 'Concert';
-      case 'street': return 'Street';
-      case 'edits': return 'Edit';
-      case 'events': return 'Event';
-      default: return 'Concert';
-    }
-  };
-
-  // Group photos by section and apply labeling fix
-  const sections = {
-    concerts: photos
-      .filter(p => p.section === 'concerts' || !p.section)
-      .map(p => ({ ...p, category: getSectionLabel(p.section || 'concerts', p.category) })),
-    street: photos
-      .filter(p => p.section === 'street')
-      .map(p => ({ ...p, category: getSectionLabel('street', p.category) })),
-    edits: photos
-      .filter(p => p.section === 'edits')
-      .map(p => ({ ...p, category: getSectionLabel('edits', p.category) })),
-    events: photos
-      .filter(p => p.section === 'events')
-      .map(p => ({ ...p, category: getSectionLabel('events', p.category) })),
-  };
-
-  // Helper to open lightbox with specific section photos
   const openLightbox = (sectionPhotos: Photo[], index: number) => {
     setCurrentSectionPhotos(sectionPhotos);
     setCurrentPhotoIndex(index);
@@ -356,6 +268,14 @@ const Gallery = ({ photos }: GalleryProps) => {
 
   const hasPhotos = photos.length > 0;
 
+  if (categoriesLoading) {
+    return (
+      <div className="container flex items-center justify-center py-32">
+        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
   return (
     <section id="gallery" className="relative">
       {/* Background aesthetics */}
@@ -363,127 +283,44 @@ const Gallery = ({ photos }: GalleryProps) => {
 
       {hasPhotos || isAuthenticated ? (
         <div className="space-y-0 divide-y divide-border/20">
+          {categories.map((cat, idx) => {
+            const entry = sectionMap[cat.value];
+            if (!entry) return null;
+            const { number, photos: sectionPhotos } = entry;
 
-          {/* ================= CONCERTS ================= */}
-          {(sections.concerts.length > 0 || isAuthenticated) && (
-            <>
-              {/* Desktop View */}
-              <div className="hidden md:block">
-                <CollageSection
-                  number="01"
-                  title="Concerts"
-                  subtitle="SWIPE TO EXPLORE NOISE."
-                  photos={sections.concerts}
-                  onOpenLightbox={(index) => openLightbox(sections.concerts, index)}
-                  isAdmin={isAuthenticated}
-                  onAddPhoto={handleAddPhoto}
-                />
-              </div>
-              {/* Mobile View */}
-              <div className="md:hidden">
-                <StackSection
-                  number="01"
-                  title="Concerts"
-                  subtitle="SWIPE TO EXPLORE NOISE."
-                  photos={sections.concerts}
-                  onOpenLightbox={(index) => openLightbox(sections.concerts, index)}
-                  isAdmin={isAuthenticated}
-                  onAddPhoto={handleAddPhoto}
-                  isMobileStack={true}
-                />
-              </div>
-            </>
-          )}
+            // Skip empty sections for non-admin visitors
+            if (!isAuthenticated && sectionPhotos.length === 0) return null;
 
-
-          {/* ================= STREET ================= */}
-          {(sections.street.length > 0 || isAuthenticated) && (
-            <>
-              <div className="hidden md:block">
-                <CollageSection
-                  number="02"
-                  title="Street"
-                  subtitle="UNSCRIPTED URBAN REALITY."
-                  photos={sections.street}
-                  onOpenLightbox={(index) => openLightbox(sections.street, index)}
-                  isAdmin={isAuthenticated}
-                  onAddPhoto={handleAddPhoto}
-                />
+            return (
+              <div key={cat.value}>
+                {/* Desktop View */}
+                <div className="hidden md:block">
+                  <CollageSection
+                    number={number}
+                    title={cat.label}
+                    subtitle={cat.subtitle || ''}
+                    photos={sectionPhotos}
+                    onOpenLightbox={(index) => openLightbox(sectionPhotos, index)}
+                    isAdmin={isAuthenticated}
+                    onAddPhoto={handleAddPhoto}
+                  />
+                </div>
+                {/* Mobile View */}
+                <div className="md:hidden">
+                  <StackSection
+                    number={number}
+                    title={cat.label}
+                    subtitle={cat.subtitle || ''}
+                    photos={sectionPhotos}
+                    onOpenLightbox={(index) => openLightbox(sectionPhotos, index)}
+                    isAdmin={isAuthenticated}
+                    onAddPhoto={handleAddPhoto}
+                    isMobileStack={true}
+                  />
+                </div>
               </div>
-              <div className="md:hidden">
-                <StackSection
-                  number="02"
-                  title="Street"
-                  subtitle="UNSCRIPTED URBAN REALITY."
-                  photos={sections.street}
-                  onOpenLightbox={(index) => openLightbox(sections.street, index)}
-                  isAdmin={isAuthenticated}
-                  onAddPhoto={handleAddPhoto}
-                  isMobileStack={true}
-                />
-              </div>
-            </>
-          )}
-
-
-          {/* ================= EDITS ================= */}
-          {(sections.edits.length > 0 || isAuthenticated) && (
-            <>
-              <div className="hidden md:block">
-                <CollageSection
-                  number="03"
-                  title="Edits"
-                  subtitle="THE ART OF COLORS."
-                  photos={sections.edits}
-                  onOpenLightbox={(index) => openLightbox(sections.edits, index)}
-                  isAdmin={isAuthenticated}
-                  onAddPhoto={handleAddPhoto}
-                />
-              </div>
-              <div className="md:hidden">
-                <StackSection
-                  number="03"
-                  title="Edits"
-                  subtitle="THE ART OF COLORS."
-                  photos={sections.edits}
-                  onOpenLightbox={(index) => openLightbox(sections.edits, index)}
-                  isAdmin={isAuthenticated}
-                  onAddPhoto={handleAddPhoto}
-                  isMobileStack={true}
-                />
-              </div>
-            </>
-          )}
-
-          {/* ================= EVENTS ================= */}
-          {(sections.events.length > 0 || isAuthenticated) && (
-            <>
-              <div className="hidden md:block">
-                <CollageSection
-                  number="04"
-                  title="Events"
-                  subtitle="CAPTURED MOMENTS & MEMORIES."
-                  photos={sections.events}
-                  onOpenLightbox={(index) => openLightbox(sections.events, index)}
-                  isAdmin={isAuthenticated}
-                  onAddPhoto={handleAddPhoto}
-                />
-              </div>
-              <div className="md:hidden">
-                <StackSection
-                  number="04"
-                  title="Events"
-                  subtitle="CAPTURED MOMENTS & MEMORIES."
-                  photos={sections.events}
-                  onOpenLightbox={(index) => openLightbox(sections.events, index)}
-                  isAdmin={isAuthenticated}
-                  onAddPhoto={handleAddPhoto}
-                  isMobileStack={true}
-                />
-              </div>
-            </>
-          )}
-
+            );
+          })}
         </div>
       ) : (
         <div className="container text-center py-40 text-muted-foreground">
