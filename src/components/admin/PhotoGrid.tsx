@@ -167,7 +167,7 @@ const PhotoGrid = () => {
                 />
 
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col justify-between p-3">
+                <div className="absolute inset-0 bg-background/80 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 flex flex-col justify-between p-2 sm:p-3">
                   <div className="flex justify-end gap-1">
                     <Button
                       size="icon"
@@ -216,11 +216,11 @@ const PhotoGrid = () => {
                     </AlertDialog>
                   </div>
 
-                  <div>
+                  <div className="min-w-0">
                     {photo.title && (
-                      <p className="text-sm font-medium truncate">{photo.title}</p>
+                      <p className="text-[10px] sm:text-sm font-medium truncate">{photo.title}</p>
                     )}
-                    <p className="text-xs text-muted-foreground">{photo.category}</p>
+                    <p className="text-[8px] sm:text-xs text-muted-foreground truncate">{photo.category}</p>
                   </div>
                 </div>
 

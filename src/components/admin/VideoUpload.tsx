@@ -103,25 +103,25 @@ const VideoUpload = () => {
     };
 
     return (
-        <div className="bg-card glass-panel rounded-xl p-8 border-border/50">
-            <div className="flex items-center justify-between mb-8">
-                <h3 className="text-2xl font-bold font-heading flex items-center gap-3">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                        <Video size={24} className="text-primary" />
+        <div className="bg-card glass-panel rounded-xl p-4 sm:p-8 border-border/50">
+            <div className="flex items-center justify-between mb-6 sm:mb-8">
+                <h3 className="text-xl sm:text-2xl font-bold font-heading flex items-center gap-2 sm:gap-3">
+                    <div className="p-1.5 sm:p-2 bg-primary/10 rounded-lg">
+                        <Video size={20} className="text-primary sm:w-6 sm:h-6" />
                     </div>
                     Upload New Video
                 </h3>
                 {file && (
-                    <span className="text-xs font-mono px-3 py-1 bg-primary/10 text-primary rounded-full">
-                        READY TO UPLOAD
+                    <span className="text-[10px] sm:text-xs font-mono px-2 sm:px-3 py-0.5 sm:py-1 bg-primary/10 text-primary rounded-full">
+                        READY
                     </span>
                 )}
             </div>
 
-            <div className="grid lg:grid-cols-2 gap-10">
+            <div className="grid lg:grid-cols-2 gap-6 sm:gap-10">
                 {/* File Picker */}
                 <div className="space-y-4">
-                    <Label className="text-xs uppercase tracking-wider text-muted-foreground font-bold">
+                    <Label className="text-[10px] sm:text-xs uppercase tracking-wider text-muted-foreground font-bold">
                         1. Select Video File
                     </Label>
                     <input
@@ -184,7 +184,7 @@ const VideoUpload = () => {
                 <div className="space-y-8">
                     {/* Section Selector */}
                     <div className="space-y-4">
-                        <Label className="text-xs uppercase tracking-wider text-muted-foreground font-bold">
+                        <Label className="text-[10px] sm:text-xs uppercase tracking-wider text-muted-foreground font-bold">
                             2. Choose Section
                         </Label>
                         {categoriesLoading ? (
@@ -225,7 +225,7 @@ const VideoUpload = () => {
 
                     {/* Title */}
                     <div className="space-y-2">
-                        <Label className="text-xs uppercase tracking-wider text-muted-foreground font-bold">
+                        <Label className="text-[10px] sm:text-xs uppercase tracking-wider text-muted-foreground font-bold">
                             3. Title (optional)
                         </Label>
                         <Input

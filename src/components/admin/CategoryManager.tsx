@@ -293,18 +293,18 @@ const CategoryManager = () => {
     }
 
     return (
-        <div className="bg-card glass-panel rounded-xl p-8 border-border/50 space-y-8">
+        <div className="bg-card glass-panel rounded-xl p-4 sm:p-8 border-border/50 space-y-6 sm:space-y-8">
             {/* Header */}
             <div className="flex items-center justify-between">
-                <h3 className="text-2xl font-bold font-heading flex items-center gap-3">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                        <FolderOpen size={24} className="text-primary" />
+                <h3 className="text-xl sm:text-2xl font-bold font-heading flex items-center gap-2 sm:gap-3">
+                    <div className="p-1.5 sm:p-2 bg-primary/10 rounded-lg">
+                        <FolderOpen size={20} className="text-primary sm:w-6 sm:h-6" />
                     </div>
-                    Manage Categories
+                    Categories
                 </h3>
                 {!showAdd && (
-                    <Button size="sm" onClick={() => setShowAdd(true)} className="gap-2">
-                        <Plus size={16} /> Add Category
+                    <Button size="sm" onClick={() => setShowAdd(true)} className="gap-1.5 sm:gap-2 text-[10px] sm:text-sm h-8 sm:h-9">
+                        <Plus size={14} className="sm:w-4 sm:h-4" /> Add
                     </Button>
                 )}
             </div>
@@ -333,25 +333,25 @@ const CategoryManager = () => {
                     return (
                         <div
                             key={cat.id}
-                            className="flex items-center gap-4 p-4 rounded-xl border border-border/50 bg-muted/10 hover:bg-muted/20 transition-colors group"
+                            className="flex items-center gap-2 sm:gap-4 p-3 sm:p-4 rounded-xl border border-border/50 bg-muted/10 hover:bg-muted/20 transition-colors group"
                         >
-                            <GripVertical size={16} className="text-muted-foreground/40 shrink-0" />
+                            <GripVertical size={14} className="text-muted-foreground/40 shrink-0 hidden xs:block" />
 
-                            <div className="p-2.5 rounded-lg bg-primary/10 shrink-0">
-                                <Icon size={18} className="text-primary" />
+                            <div className="p-2 sm:p-2.5 rounded-lg bg-primary/10 shrink-0">
+                                <Icon size={16} className="text-primary sm:w-4.5 sm:h-4.5" />
                             </div>
 
                             <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-3 flex-wrap">
-                                    <span className="font-semibold text-sm">{cat.label}</span>
-                                    <span className="text-xs font-mono text-muted-foreground bg-muted px-2 py-0.5 rounded-full">{cat.value}</span>
+                                <div className="flex items-center gap-2 flex-wrap min-w-0">
+                                    <span className="font-semibold text-xs sm:text-sm truncate max-w-[120px] sm:max-w-none">{cat.label}</span>
+                                    <span className="text-[10px] font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full hidden xs:inline">{cat.value}</span>
                                 </div>
                                 {cat.subtitle && (
-                                    <p className="text-xs text-muted-foreground mt-0.5 truncate">{cat.subtitle}</p>
+                                    <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 truncate">{cat.subtitle}</p>
                                 )}
                             </div>
 
-                            <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div className="flex items-center gap-1 sm:gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                                 <Button
                                     size="icon"
                                     variant="outline"

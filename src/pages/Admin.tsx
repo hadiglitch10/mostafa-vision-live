@@ -51,8 +51,8 @@ const Admin = () => {
       <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm sticky top-0 z-40">
         <div className="container flex items-center justify-between h-16">
           <div className="flex items-center gap-4">
-            <a href="/" className="text-lg font-bold tracking-tight">
-              MOSTAFA<span className="text-primary">VISION</span>
+            <a href="/" className="text-base sm:text-lg font-bold tracking-tight">
+              MUSTAFA<span className="text-primary">VISION</span>
             </a>
             <span className="text-xs uppercase tracking-widest text-muted-foreground hidden sm:inline">
               / Admin Portal
@@ -89,12 +89,12 @@ const Admin = () => {
       </header>
 
       {/* Main Content */}
-      <main className="container py-8 space-y-8">
+      <main className="container py-4 sm:py-8 space-y-6 sm:space-y-8">
         {/* Welcome Section */}
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-              <Camera className="text-primary" />
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight flex items-center gap-2 sm:gap-3">
+              <Camera size={24} className="text-primary sm:w-8 sm:h-8" />
               Digital Archive
             </h1>
             <p className="text-muted-foreground mt-1">
