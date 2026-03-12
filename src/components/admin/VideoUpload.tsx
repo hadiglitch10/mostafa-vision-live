@@ -268,6 +268,7 @@ const VideoUpload = () => {
                             </div>
                             <button
                                 onClick={clearFile}
+                                aria-label="Remove selected video"
                                 className="p-2 rounded-full hover:bg-destructive/10 hover:text-destructive transition-colors"
                             >
                                 <X size={18} />

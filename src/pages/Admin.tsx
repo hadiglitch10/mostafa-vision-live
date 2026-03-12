@@ -2,19 +2,21 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
-import { LogOut, Camera, ExternalLink, FolderOpen, Video, Image } from 'lucide-react';
+import { LogOut, Camera, ExternalLink, FolderOpen, Video, Image, Type } from 'lucide-react';
 import PhotoUpload from '@/components/admin/PhotoUpload';
 import PhotoGrid from '@/components/admin/PhotoGrid';
 import CategoryManager from '@/components/admin/CategoryManager';
 import VideoUpload from '@/components/admin/VideoUpload';
+import ContentManager from '@/components/admin/ContentManager';
 import { cn } from '@/lib/utils';
 
-type Tab = 'photos' | 'categories' | 'videos';
+type Tab = 'photos' | 'categories' | 'videos' | 'content';
 
 const TABS: { key: Tab; label: string; icon: React.ElementType }[] = [
   { key: 'photos', label: 'Photos', icon: Image },
   { key: 'categories', label: 'Categories', icon: FolderOpen },
   { key: 'videos', label: 'Videos', icon: Video },
+  { key: 'content', label: 'Content', icon: Type },
 ];
 
 const Admin = () => {
@@ -136,6 +138,10 @@ const Admin = () => {
 
         {activeTab === 'videos' && (
           <VideoUpload />
+        )}
+
+        {activeTab === 'content' && (
+          <ContentManager />
         )}
       </main>
 

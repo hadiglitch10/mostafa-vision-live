@@ -1,7 +1,11 @@
-import { Instagram, Mail } from "lucide-react";
 import aboutImage from "@/assets/about.jpeg";
+import { ContentMap } from "@/hooks/usePageContent";
 
-const About = () => {
+interface AboutProps {
+  content?: ContentMap;
+}
+
+const About = ({ content = {} }: AboutProps) => {
   return (
     <section id="about" className="py-16 md:py-40 bg-background relative overflow-hidden">
       {/* Background Blobs (Light Purple/Red) - Hidden on mobile for performance */}
@@ -15,24 +19,19 @@ const About = () => {
           {/* Text Content */}
           <div className="space-y-8">
             <div className="inline-block px-4 py-1 rounded-full border border-primary/20 bg-primary/5 backdrop-blur-sm">
-              <span className="font-typewriter text-xs tracking-widest uppercase text-primary">The Artist</span>
+              <span className="font-typewriter text-xs tracking-widest uppercase text-primary">
+                {content.about_badge ?? "The Artist"}
+              </span>
             </div>
 
             <h2 className="text-4xl md:text-6xl font-typewriter font-bold leading-tight text-foreground mix-blend-difference">
-              THE EYE BEHIND <br />
-              <span className="text-primary italic">THE LENS.</span>
+              {content.about_title_line1 ?? "THE EYE BEHIND"} <br />
+              <span className="text-primary italic">{content.about_title_line2 ?? "THE LENS."}</span>
             </h2>
 
             <div className="space-y-6 text-muted-foreground font-typewriter text-base md:text-lg leading-relaxed">
-              <p>
-                23-year-old concert and street photographer based in the heart of the music scene.
-                I live for the chaos of a mosh pit, the quiet intensity of a backstage moment,
-                and everything in between.
-              </p>
-              <p>
-                My work is about capturing energy you can feel—the sweat, the lights,
-                the raw emotion that makes live music unforgettable.
-              </p>
+              <p>{content.about_bio_1 ?? "23-year-old concert and street photographer based in the heart of the music scene. I live for the chaos of a mosh pit, the quiet intensity of a backstage moment, and everything in between."}</p>
+              <p>{content.about_bio_2 ?? "My work is about capturing energy you can feel—the sweat, the lights, the raw emotion that makes live music unforgettable."}</p>
             </div>
           </div>
 

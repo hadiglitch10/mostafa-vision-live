@@ -2,12 +2,15 @@ import { useEffect, useState, useRef } from "react";
 import { ChevronDown, Plus, Camera } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { ContentMap } from "@/hooks/usePageContent";
 
 interface HeroProps {
   heroImage: string;
+  heroVideo?: string;
+  content?: ContentMap;
 }
 
-const Hero = ({ heroImage }: HeroProps) => {
+const Hero = ({ heroImage, heroVideo, content = {} }: HeroProps) => {
   const [scrollY, setScrollY] = useState(0);
   const heroRef = useRef<HTMLDivElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -33,26 +36,40 @@ const Hero = ({ heroImage }: HeroProps) => {
 
   return (
     <section ref={heroRef} className="relative h-screen w-full overflow-hidden bg-background">
-      {/* Background Image with Parallax & Blur */}
+      {/* Background Media with Parallax & Blur */}
       <div
         className="absolute inset-0 will-change-transform"
         style={{
           transform: `translateY(${parallaxOffset}px) scale(1.05)`,
         }}
       >
-        <div className="absolute inset-0 bg-black/20 z-10" />
-        <img
-          src={heroImage}
-          alt="Concert photography by Mustafavision"
-          className={`w-full h-full object-cover transition-all duration-2000 ease-out ${isLoaded ? 'opacity-100 blur-0 scale-100' : 'opacity-0 blur-xl scale-110'}`}
-          onLoad={() => setIsLoaded(true)}
-        />
+        <div className="absolute inset-0 bg-black/40 z-10" />
+
+        {heroVideo ? (
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            onLoadedData={() => setIsLoaded(true)}
+            className={`w-full h-full object-cover transition-opacity duration-2000 ${isLoaded ? 'opacity-100' : 'opacity-0'} grayscale contrast-125`}
+          >
+            <source src={heroVideo} type="video/mp4" />
+          </video>
+        ) : (
+          <img
+            src={heroImage}
+            alt="Photography by Mustafavision"
+            className={`w-full h-full object-cover transition-all duration-2000 ease-out ${isLoaded ? 'opacity-100 blur-0 scale-100' : 'opacity-0 blur-xl scale-110'}`}
+            onLoad={() => setIsLoaded(true)}
+          />
+        )}
       </div>
 
       {/* Glass Gradient Overlay */}
       <div
         className="absolute inset-0 pointer-events-none z-10"
-        style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(var(--background), 0.8) 100%)' }}
+        style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0, 0, 0, 0.8) 100%)' }}
       />
 
       {/* Content */}
@@ -60,16 +77,16 @@ const Hero = ({ heroImage }: HeroProps) => {
 
         <div className="space-y-8 max-w-5xl mx-auto">
           <p className="text-sm md:text-base uppercase tracking-[0.4em] font-light text-white/80 animate-fade-up">
-            Mustafa Vision
+            {content.hero_subtitle ?? "Mustafa Vision"}
           </p>
 
           <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-thin tracking-tighter leading-[0.9] text-white mix-blend-overlay animate-fade-up-delay">
-            Light <span className="font-normal italic font-serif opacity-90">&</span> <br />
-            Motion
+            {content.hero_title_line1 ?? "Light"} <span className="font-normal italic font-serif opacity-90">&</span> <br />
+            {content.hero_title_line2 ?? "Motion"}
           </h1>
 
           <p className="text-white/70 font-light text-lg md:text-xl max-w-xl mx-auto leading-relaxed animate-fade-up-delay-2">
-            Capturing the raw frequency of live performance and the silent narrative of the streets.
+            {content.hero_description ?? "Capturing the raw frequency of live performance and the silent narrative of the streets."}
           </p>
 
           {/* Admin Quick Action */}

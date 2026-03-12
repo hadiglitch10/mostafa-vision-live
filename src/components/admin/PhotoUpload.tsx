@@ -160,6 +160,7 @@ const PhotoUpload = () => {
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <button
                   onClick={clearSelection}
+                  aria-label="Remove selected image"
                   className="p-3 bg-destructive text-destructive-foreground rounded-full hover:scale-110 transition-transform"
                 >
                   <X size={24} />

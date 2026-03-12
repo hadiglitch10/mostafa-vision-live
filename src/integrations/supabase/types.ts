@@ -113,6 +113,51 @@ export type Database = {
         }
         Relationships: []
       }
+      page_content: {
+        Row: {
+          id: string
+          key: string
+          value: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          key: string
+          value?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          key?: string
+          value?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      page_sections: {
+        Row: {
+          id: string
+          section_key: string
+          label: string
+          sort_order: number
+          visible: boolean
+        }
+        Insert: {
+          id?: string
+          section_key: string
+          label: string
+          sort_order?: number
+          visible?: boolean
+        }
+        Update: {
+          id?: string
+          section_key?: string
+          label?: string
+          sort_order?: number
+          visible?: boolean
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
