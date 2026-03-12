@@ -172,7 +172,7 @@ const StackSection = ({
 
       {/* Premium 3D Stack - Swipeable */}
       <div
-        className="relative w-[82vw] max-w-sm h-[420px] perspective-1000 mt-2 mx-auto touch-pan-y overflow-visible"
+        className="relative w-[82vw] max-w-[320px] aspect-[4/5] perspective-1000 mt-2 mx-auto touch-pan-y"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -188,8 +188,7 @@ const StackSection = ({
             return (
               <div
                 key={item.id}
-                className={`absolute top-0 left-0 w-full h-full transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] cursor-pointer group ${isSwiped ? 'pointer-events-none' : ''
-                  }`}
+                className={`absolute top-0 left-0 w-full h-full transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] cursor-pointer ${isSwiped ? 'pointer-events-none' : ''}`}
                 style={{
                   transform: isSwiped
                     ? `translate3d(-120%, ${position * 8}px, -${Math.abs(position) * 30}px) rotate(-15deg)`
@@ -199,14 +198,16 @@ const StackSection = ({
                 }}
                 onClick={() => !isSwiped && onOpenLightbox(index)}
               >
-                <div className="w-full h-full rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] md:bg-white/5 md:backdrop-blur-md bg-[#111] border border-white/10 ring-1 ring-white/20 will-change-transform">
-                  <div className="absolute inset-0 z-10 bg-gradient-to-tr from-white/20 to-transparent opacity-50 pointer-events-none" />
-                  <PhotoCard
+                <div className="relative w-full h-full rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-[#111] border border-white/10 ring-1 ring-white/20">
+                  {/* Shine overlay */}
+                  <div className="absolute inset-0 z-10 bg-gradient-to-tr from-white/10 to-transparent pointer-events-none" />
+
+                  <img
                     src={item.type === 'photo' ? item.image_url : (item.thumbnail_url || '')}
-                    title={item.title ?? undefined}
-                    category={item.category ?? undefined}
-                    aspectRatio="4/5"
-                    onClick={() => !isSwiped && onOpenLightbox(index)}
+                    alt={item.title || "Photography by Mustafavision"}
+                    className="w-full h-full object-cover"
+                    loading={position <= 1 ? "eager" : "lazy"}
+                    decoding="async"
                   />
 
                   {/* Video Indicator */}
