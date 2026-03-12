@@ -82,12 +82,12 @@ const ContentEditor = () => {
             {group.fields.map(({ key, label, multiline }) => (
               <div key={key} className="space-y-1.5">
                 <label htmlFor={`field-${key}`} className="text-xs text-muted-foreground font-medium">{label}</label>
-                <div className="flex gap-2 items-start">
+                <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-start">
                   {multiline ? (
                     <textarea
                       id={`field-${key}`}
-                      rows={3}
-                      className="flex-1 w-full rounded-lg border border-border bg-muted/30 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none"
+                      rows={4}
+                      className="flex-1 w-full rounded-lg border border-border bg-muted/30 px-3 py-2.5 text-base sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none"
                       value={draft[key] ?? ""}
                       onChange={(e) => setDraft((d) => ({ ...d, [key]: e.target.value }))}
                     />
@@ -95,7 +95,7 @@ const ContentEditor = () => {
                     <input
                       id={`field-${key}`}
                       type="text"
-                      className="flex-1 w-full rounded-lg border border-border bg-muted/30 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+                      className="flex-1 w-full rounded-lg border border-border bg-muted/30 px-3 py-2.5 text-base sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                       value={draft[key] ?? ""}
                       onChange={(e) => setDraft((d) => ({ ...d, [key]: e.target.value }))}
                     />
@@ -103,15 +103,16 @@ const ContentEditor = () => {
                   <Button
                     size="sm"
                     variant="outline"
-                    className="shrink-0 h-9 px-3"
+                    className="w-full sm:w-auto sm:h-9 sm:px-3 h-11 gap-2"
                     onClick={() => handleSave(key)}
                     disabled={saving === key || draft[key] === content?.[key]}
                   >
                     {saving === key ? (
-                      <Loader2 size={14} className="animate-spin" />
+                      <Loader2 size={15} className="animate-spin" />
                     ) : (
-                      <Save size={14} />
+                      <Save size={15} />
                     )}
+                    <span className="sm:hidden text-sm">Save</span>
                   </Button>
                 </div>
               </div>
@@ -180,48 +181,50 @@ const SectionOrder = () => {
         {local.map((section, index) => (
           <div
             key={section.id}
-            className={`flex items-center gap-3 p-3 rounded-lg border border-border/50 bg-card/50 ${!section.visible ? "opacity-50" : ""}`}
+            className={`flex items-center gap-3 p-4 rounded-xl border border-border/50 bg-card/50 ${!section.visible ? "opacity-50" : ""}`}
           >
             {/* Order controls */}
-            <div className="flex flex-col gap-0.5">
+            <div className="flex flex-col gap-1">
               <button
                 onClick={() => move(index, -1)}
                 disabled={index === 0}
-                className="p-1 rounded hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                aria-label="Move up"
+                className="p-2 rounded-lg hover:bg-muted active:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               >
-                <ChevronUp size={14} />
+                <ChevronUp size={18} />
               </button>
               <button
                 onClick={() => move(index, 1)}
                 disabled={index === local.length - 1}
-                className="p-1 rounded hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                aria-label="Move down"
+                className="p-2 rounded-lg hover:bg-muted active:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               >
-                <ChevronDown size={14} />
+                <ChevronDown size={18} />
               </button>
             </div>
 
             {/* Position badge */}
-            <span className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-xs font-bold text-muted-foreground shrink-0">
+            <span className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-sm font-bold text-muted-foreground shrink-0">
               {index + 1}
             </span>
 
             {/* Section name */}
-            <span className="flex-1 text-sm font-medium">{section.label}</span>
+            <span className="flex-1 text-base font-medium">{section.label}</span>
 
             {/* Visibility toggle */}
             <button
               onClick={() => toggleVisible(section.id)}
-              className="p-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
-              title={section.visible ? "Hide section" : "Show section"}
+              aria-label={section.visible ? "Hide section" : "Show section"}
+              className="p-3 rounded-xl hover:bg-muted active:bg-muted transition-colors text-muted-foreground hover:text-foreground"
             >
-              {section.visible ? <Eye size={16} /> : <EyeOff size={16} />}
+              {section.visible ? <Eye size={20} /> : <EyeOff size={20} />}
             </button>
           </div>
         ))}
       </div>
 
-      <Button onClick={handleSave} disabled={saving} className="w-full gap-2">
-        {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+      <Button onClick={handleSave} disabled={saving} className="w-full h-12 gap-2 text-base">
+        {saving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
         Save Order
       </Button>
     </div>
@@ -238,12 +241,12 @@ const ContentManager = () => {
   return (
     <div className="space-y-6">
       {/* Sub-tabs */}
-      <div className="flex gap-1 p-1 bg-muted/40 rounded-xl border border-border/50 w-full sm:w-fit">
+      <div className="grid grid-cols-2 sm:flex gap-1 p-1 bg-muted/40 rounded-xl border border-border/50 w-full sm:w-fit">
         {(["text", "sections"] as ContentTab[]).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`flex-1 sm:flex-none px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+            className={`flex-1 sm:flex-none px-5 py-3 sm:py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
               tab === t
                 ? "bg-card shadow-sm text-foreground border border-border/50"
                 : "text-muted-foreground hover:text-foreground hover:bg-muted/60"

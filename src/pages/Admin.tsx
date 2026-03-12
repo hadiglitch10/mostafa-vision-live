@@ -93,7 +93,7 @@ const Admin = () => {
       {/* Main Content */}
       <main className="container py-4 sm:py-8 space-y-6 sm:space-y-8">
         {/* Welcome Section */}
-        <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div className="hidden sm:flex items-start justify-between gap-4 flex-wrap">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight flex items-center gap-2 sm:gap-3">
               <Camera size={24} className="text-primary sm:w-8 sm:h-8" />
@@ -106,20 +106,20 @@ const Admin = () => {
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex gap-1 p-1 bg-muted/40 rounded-xl border border-border/50 w-full sm:w-fit">
+        <div className="grid grid-cols-4 sm:flex gap-1 p-1 bg-muted/40 rounded-xl border border-border/50 w-full sm:w-fit">
           {TABS.map(({ key, label, icon: Icon }) => (
             <button
               key={key}
               onClick={() => setActiveTab(key)}
               className={cn(
-                'flex flex-1 sm:flex-none items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
+                'flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-2 sm:px-4 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200',
                 activeTab === key
                   ? 'bg-card shadow-sm text-foreground border border-border/50'
                   : 'text-muted-foreground hover:text-foreground hover:bg-muted/60'
               )}
             >
-              <Icon size={15} />
-              <span className="hidden xs:inline sm:inline">{label}</span>
+              <Icon size={18} className="sm:w-4 sm:h-4" />
+              <span>{label}</span>
             </button>
           ))}
         </div>

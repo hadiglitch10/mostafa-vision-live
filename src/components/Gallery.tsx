@@ -188,7 +188,7 @@ const StackSection = ({
             return (
               <div
                 key={item.id}
-                className={`absolute top-0 left-0 w-full h-full transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] cursor-pointer group ${isSwiped ? 'pointer-events-none' : ''
+                className={`absolute top-0 left-0 w-full h-full transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] cursor-pointer group ${isSwiped ? 'pointer-events-none' : ''
                   }`}
                 style={{
                   transform: isSwiped

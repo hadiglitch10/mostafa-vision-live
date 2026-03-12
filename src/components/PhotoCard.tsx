@@ -55,7 +55,7 @@ const PhotoCard = ({ src, title, category, aspectRatio = "4/5", onClick, priorit
             alt={title || "Photography by Mustafavision"}
             loading="lazy"
             decoding="async"
-            className={`w-full h-full object-cover transition-all duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'} group-hover:scale-110 will-change-transform`}
+            className={`w-full h-full object-cover transition-[opacity,transform] duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'} md:group-hover:scale-110`}
             onLoad={() => setIsLoaded(true)}
             onError={() => setIsLoaded(true)} // Treat error as loaded to show whatever placeholder exists
           />
